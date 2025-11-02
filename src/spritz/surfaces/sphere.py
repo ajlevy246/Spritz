@@ -1,4 +1,5 @@
 import numpy as np
+from numba import njit
 
 from .surface import Surface
 from ..raytracing import Ray, Intersection
@@ -21,15 +22,22 @@ class Sphere(Surface):
         return f"<Sphere at({self.center[0]},{self.center[1]},{self.center[2]}) and r={self.radius}>"
 
     def hit(self, ray, t0=0, t1=np.inf):
-        t = Sphere._hit(self.center, self.radius, ray.origin, ray.direction, t0, t1)
+        ray_origin, ray_direction = ray
+        t = Sphere._hit(self.center, self.radius, ray_origin, ray_direction, t0, t1)
         if t is None:
             return None
         
-        intersection_point = ray.evaluate(t)
-        normal = (intersection_point - self.center) / self.radius
+        t, normal = t
         return Intersection(self, t, normal)
 
-    def _hit(sphere_center, sphere_radius, ray_origin, ray_direction, t0, t1):
+    @njit(cache=True)
+    def _hit(
+        sphere_center: np.array,
+        sphere_radius: float, 
+        ray_origin: np.array,
+        ray_direction: np.array,
+        t0: float, 
+        t1: float) -> tuple[float, np.array] | None:
         """An intersection of a ray with the sphere occurs at time t if:
 
         |(`ray_origin` + `t`*`ray_direction` - `sphere_center`)| - `sphere_radius`^2 = 0
@@ -58,7 +66,7 @@ class Sphere(Surface):
         
         if t0 <= h_1 <= t1:
             if t0 <= h_2 <= t1:
-                h = min(h_1, h_2)
+                h = np.minimum(h_1, h_2)
             else:
                 h = h_1
         else:
@@ -67,4 +75,7 @@ class Sphere(Surface):
             else: # Neither intersection point lies in the time interval we care about
                   # i.e., if another object is in between this sphere and the ray's origin
                 return None 
-        return h
+                
+        intersection_point = ray_origin + h * ray_direction
+        normal = (intersection_point - sphere_center) / sphere_radius
+        return (h, normal)

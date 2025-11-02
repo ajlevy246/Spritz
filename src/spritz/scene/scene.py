@@ -8,6 +8,8 @@ from ..materials import *
 from ..raytracing import *
 from ..surfaces import *
 
+from numba import jit
+
 class Scene:
     """Scenes host all of the objects needed for rendering"""
 
@@ -30,16 +32,26 @@ class Scene:
 
     def render(self, width=50, height=50):
         """Rendering routine for the scene's camera."""
-        pixels = []
-        for row in range(height):
-            pixel_row = []
-            for col in range(width):
-                # Change the pipeline: remove Ray objects and replace with a tuple of two vectors: (Vec3 Origin, Vec3 Direction)
-                ray = self.camera.generate_ray(col, row, width, height)
-                pixel = self._shade(ray).rgb
-                pixel_row.append(pixel)
-            pixels.append(pixel_row)
+        origins, directions = self.camera.generate_rays(width, height)
+
+        pixels = np.zeros((height, width, 3), dtype=np.float64)
+
+        for y in range(height):
+            for x in range(width):
+                ray = (origins[y, x], directions[y, x])
+                pixels[y, x] = self._shade(ray).rgb
+
         return pixels
+
+        # pixels = []
+        # for row in range(height):
+        #     pixel_row = []
+        #     for col in range(width):
+        #         ray = self.camera.generate_ray(col, row, width, height)
+        #         pixel = self._shade(ray).rgb
+        #         pixel_row.append(pixel)
+        #     pixels.append(pixel_row)
+        # return pixels
 
     def hit(self, ray, t0=0, t1=np.inf):
         return self.objects.hit(ray, t0, t1)

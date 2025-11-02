@@ -1,4 +1,5 @@
 import numpy as np
+from numba import njit
 
 from .surface import Surface
 from ..raytracing import Ray, Intersection
@@ -43,12 +44,33 @@ class Triangle(Surface):
         # [a d g] [\beta ]    [j]
         # |b e h| |\gamma| =  |k|
         # [c f i] [  t   ]    [l]
-        v2v1 = self.v1 - self.v2 # Edge v2 -> v1
-        v3v1 = self.v1 - self.v3 # Edge v3 -> v1
+        ray_origin, ray_direction = ray
+        t = Triangle._hit(ray_origin, ray_direction, self.v1, self.v2, self.v3, t0, t1)
+        if t is None:
+            return None
+        t, normal = t
+        return Intersection(self, t, normal)
+
+    @njit(fastmath=True)
+    def _hit(
+        ray_origin: np.array,
+        ray_direction: np.array,
+        v1: np.array,
+        v2: np.array,
+        v3: np.array,
+        t0: np.array,
+        t1: np.array
+    ) -> tuple[float, np.array] | None:
+        # Build linear system:
+        # [a d g] [\beta ]    [j]
+        # |b e h| |\gamma| =  |k|
+        # [c f i] [  t   ]    [l]
+        v2v1 = v1 - v2 # Edge v2 -> v1
+        v3v1 = v1 - v3 # Edge v3 -> v1
         a, b, c = v2v1 
         d, e, f = v3v1
-        g, h, i = ray.direction
-        j, k, l = self.v1 - ray.origin # Vector from ray origin to v1
+        g, h, i = ray_direction
+        j, k, l = v1 - ray_origin # Vector from ray origin to v1
 
         # Solve with Cramer's rule
         ei_hf = e*i - h*f
@@ -72,8 +94,6 @@ class Triangle(Surface):
                 if 0 <= beta <= 1 - gamma:
                     normal = np.cross(v2v1, v3v1)
                     normal /= np.linalg.norm(normal)
-                    return Intersection(self, t, normal)
+                    return (t, normal)
         return None
-
-                
         
