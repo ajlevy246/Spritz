@@ -15,14 +15,14 @@ class Material():
         Ambient Coefficient: R/pi, where R is the reflectance (fraction of irradiance it reflects)
 
         Args:
-            ambient_coeff (Color): Ambient reflectance coefficient
-            diffuse_coeff (Color): Diffuse reflectance coefficient
-            specular_coeff (Color): Specular reflectance coefficient
+            ambient_coeff (tuple[float]): Ambient reflectance coefficient   (RGB)
+            diffuse_coeff (tuple[float]): Diffuse reflectance coefficient   (RGB)
+            specular_coeff (tuple[float]): Specular reflectance coefficient (RGB)
             shininess (int), optional: Phong exponent
         """
-        self.ambient = ambient
-        self.diffuse = diffuse
-        self.specular = specular
+        self.ambient = np.array(ambient, dtype=float)
+        self.diffuse = np.array(diffuse, dtype=float)
+        self.specular = np.array(specular, dtype=float)
         self.shininess = shininess
 
     def reflect(self, light_direction, viewing_direction, surface_normal):
@@ -36,14 +36,14 @@ class Material():
         """
         
         color = Material._reflect(
-            np.array(self.diffuse.rgb, dtype=float),
-            np.array(self.specular.rgb, dtype=float),
+            np.array(self.diffuse, dtype=float),
+            np.array(self.specular, dtype=float),
             light_direction,
             viewing_direction,
             surface_normal,
             self.shininess,
         )
-        return Color(*color)
+        return color
     
     @njit(cache=True)
     def _reflect(kd: np.array, ks: np.array, l: np.array, v: np.array, n: np.array, shininess: int) -> np.array:

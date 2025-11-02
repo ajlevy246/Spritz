@@ -2,13 +2,13 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-from ..raytracing import Ray, Intersection
+from ..raytracing import Intersection
 
 class Surface(ABC):
     """Surface object is the parent class of all surfaces in the engine."""
     
     @abstractmethod
-    def hit(self, ray: Ray, t0=0, t1=np.inf) -> Intersection:
+    def hit(self, ray, t0=0, t1=np.inf) -> Intersection:
         """Returns the Intersection of the surface with a ray.
 
         If the two do not intersect, return None

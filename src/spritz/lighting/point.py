@@ -18,7 +18,7 @@ class PointLight(Light):
             intensity (Color): intensity of the light
         """
         self.center = np.array(center, dtype=float)
-        self.intensity = intensity
+        self.intensity = np.array(intensity, dtype=float)
 
     # def illuminate(self, scene, ray, intersection):
     #     """Illuminate a point of intersection.
@@ -92,7 +92,7 @@ class PointLight(Light):
         E = self.intensity / dist**2
         v = -ray_direction
         k = intersection.surface.material.reflect(l, v, intersection.normal)
-        return k * E
+        return np.multiply(k, E)
     
     @njit(cache=True)
     def _illuminate(

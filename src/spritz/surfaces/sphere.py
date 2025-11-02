@@ -2,7 +2,7 @@ import numpy as np
 from numba import njit
 
 from .surface import Surface
-from ..raytracing import Ray, Intersection
+from ..raytracing import Intersection
 
 class Sphere(Surface):
     """Spritz Sphere"""

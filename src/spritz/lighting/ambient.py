@@ -11,7 +11,7 @@ class AmbientLight(Light):
         Args:
             intensity (Color): Intensity of the ambient light
         """
-        self.intensity = intensity
+        self.intensity = np.array(intensity, dtype=float)
 
     def illuminate(self, scene, ray, intersection):
         """Computes the contribution of the light to the shading
@@ -25,4 +25,4 @@ class AmbientLight(Light):
             Color: Shading at the given pixel.
         """
         material = intersection.surface.material
-        return self.intensity * material.ambient
+        return np.multiply(self.intensity, material.ambient)

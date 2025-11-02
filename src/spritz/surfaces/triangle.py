@@ -2,7 +2,7 @@ import numpy as np
 from numba import njit
 
 from .surface import Surface
-from ..raytracing import Ray, Intersection
+from ..raytracing import Intersection
 
 class Triangle(Surface):
     """Spritz Triangle"""
@@ -51,7 +51,7 @@ class Triangle(Surface):
         t, normal = t
         return Intersection(self, t, normal)
 
-    @njit(fastmath=True)
+    @njit(cache=True)
     def _hit(
         ray_origin: np.array,
         ray_direction: np.array,

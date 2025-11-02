@@ -39,7 +39,7 @@ class Scene:
         for y in range(height):
             for x in range(width):
                 ray = (origins[y, x], directions[y, x])
-                pixels[y, x] = self._shade(ray).rgb
+                pixels[y, x] = self._shade(ray)
 
         return pixels
 
@@ -62,7 +62,8 @@ class Scene:
         if intersection is None:
             return self.background_color
         
-        shade = Color(0, 0, 0)
+        shade = np.array((0, 0, 0), dtype=float)
         for light in self.lights:
-            shade += light.illuminate(self, ray, intersection)
+            light_contribution = light.illuminate(self, ray, intersection)
+            shade += light_contribution
         return shade
