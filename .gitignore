@@ -1,0 +1,5 @@
+.venv/
+
+*.egg_info
+*.png
+test.py

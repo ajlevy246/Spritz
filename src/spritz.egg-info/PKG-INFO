@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: spritz
+Version: 0.0.0
+Summary: A simple computer graphics engine written in python
+Author-email: Alex Levy <ajlevy246@gmail.com>
+License-Expression: MIT
+Project-URL: homepage, https://github.com/ajlevy246/Spritz
+Classifier: Programming Language :: Python :: 3
+Classifier: Operation System :: OS Independent
+License-File: LICENSE.txt
+Dynamic: license-file

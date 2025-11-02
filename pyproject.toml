@@ -1,0 +1,23 @@
+[project]
+name = "spritz"
+version = "0.0.0"
+authors = [
+    {name = "Alex Levy", email = "ajlevy246@gmail.com"},
+]
+description = "A simple computer graphics engine written in python"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operation System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE.txt"]
+
+[project.urls]
+homepage = "https://github.com/ajlevy246/Spritz"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

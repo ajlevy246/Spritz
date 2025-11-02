@@ -1,0 +1,3 @@
+Reference: Fundamentals of Computer Graphics; 5th Edition
+
+Removed type hints...
