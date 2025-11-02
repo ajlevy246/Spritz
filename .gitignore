@@ -3,3 +3,5 @@
 *.egg_info
 *.png
 test.py
+
+__pycache__/
