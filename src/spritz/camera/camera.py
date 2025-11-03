@@ -81,16 +81,7 @@ class Camera:
                     u: np.ndarray,
                     v: np.ndarray,
                     w: np.ndarray):
-        """Numba JIT compiled routine for generating all rays at once.
-
-        Args:
-            width (int): Image width
-            height (int): Image height
-            eye (np.ndarray): Camera eye position
-            fov (float): Field of view in degrees
-            aspect (float): Aspect ratio
-            u, v, w (np.ndarray): Camera basis vectors
-        """
+        
         fov = np.deg2rad(fov)
 
         # Image plane half-size
@@ -123,7 +114,3 @@ class Camera:
                 origins[j, i, 2] = eye[2]
 
         return origins, dirs
-
-
-
-

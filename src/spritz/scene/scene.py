@@ -8,16 +8,15 @@ from ..materials import *
 from ..raytracing import *
 from ..surfaces import *
 
-from numba import jit
-
 class Scene:
     """Scenes host all of the objects needed for rendering"""
 
-    def __init__(self, objects=None, lights=None, camera=None, background_color=GRAY):
+    def __init__(self, objects=None, lights=None, camera=None, background_color=GRAY, max_bounces=1):
         self.objects = SurfaceGroup(objects)
         self.lights = lights or []
         self.camera = camera
         self.background_color = background_color
+        self.max_bounces = max_bounces
         if camera is None:
             self.camera = Camera((1, 1, 1), (-1, -1, -1))
 
@@ -43,20 +42,10 @@ class Scene:
 
         return pixels
 
-        # pixels = []
-        # for row in range(height):
-        #     pixel_row = []
-        #     for col in range(width):
-        #         ray = self.camera.generate_ray(col, row, width, height)
-        #         pixel = self._shade(ray).rgb
-        #         pixel_row.append(pixel)
-        #     pixels.append(pixel_row)
-        # return pixels
-
     def hit(self, ray, t0=0, t1=np.inf):
         return self.objects.hit(ray, t0, t1)
 
-    def _shade(self, ray):
+    def _shade(self, ray, bounces=0):
         """Compute pixel for a given viewing ray"""
         intersection = self.hit(ray)
         if intersection is None:
@@ -66,4 +55,13 @@ class Scene:
         for light in self.lights:
             light_contribution = light.illuminate(self, ray, intersection)
             shade += light_contribution
+
+        # reflect
+        if bounces < self.max_bounces:
+            ray_origin, ray_direction = ray
+            reflect_origin = ray_origin + intersection.t * ray_direction + 1e-6 * intersection.normal
+            reflect_direction = ray_direction - 2*(np.dot(ray_direction, intersection.normal))*intersection.normal
+            reflect_ray = (reflect_origin, reflect_direction)
+            shade += np.multiply(intersection.surface.material.specular, self._shade(reflect_ray, bounces + 1))
+            
         return shade

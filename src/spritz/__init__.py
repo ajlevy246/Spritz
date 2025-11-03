@@ -35,6 +35,7 @@ from .surfaces import (
     Surface, SurfaceGroup,
     Sphere,
     Triangle,
+    Plane,
 )
 
 from .scene import (
@@ -47,6 +48,6 @@ __all__ = [
     'Light', 'PointLight', 'AmbientLight',
     'Material',
     'Intersection', 'Ray',
-    'Surface', 'SurfaceGroup', 'Sphere', 'Triangle',
+    'Surface', 'SurfaceGroup', 'Sphere', 'Triangle', 'Plane',
     'Scene',
 ]

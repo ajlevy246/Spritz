@@ -10,8 +10,13 @@ from .triangle import (
     Triangle,
 )
 
+from .plane import (
+    Plane,
+)
+
 __all__ = [
     "Surface", "SurfaceGroup",
     "Sphere",
     "Triangle",
+    "Plane",
 ]
