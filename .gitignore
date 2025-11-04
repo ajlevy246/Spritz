@@ -1,6 +1,6 @@
 .venv/
 
-*.egg_info
+*.egg-info
 *.png
 test.py
 ani/
