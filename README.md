@@ -4,6 +4,13 @@ Reference: Fundamentals of Computer Graphics; 5th Edition
 
 Spritz is a simple raytracer implemented in Python, using Numba's JIT compiler for performance.
 
+## Examples - Renders
+
+<div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+<img src="./progress/2bouncefancy.png" width=500 alt="Simple scene with mirror reflections">
+<img src="./progress/frame.png" width=500 alt="Simple scene with RGB lighting and specular reflections">
+</div>
+
 
 ## How's it work? 
 
