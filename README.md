@@ -1,8 +1,8 @@
-Reference: Fundamentals of Computer Graphics; 5th Edition
+
 
 # Spritz
 
-Spritz is a simple raytracer implemented in Python, using Numba's JIT compiler for performance.
+Spritz is a simple raytracer implemented in Python, using Numba's JIT compiler for performance.[^1]
 
 ## Examples - Renders
 
@@ -113,3 +113,7 @@ Now that we know what object the ray hit, the color at the point of intersection
 </div>
 
 > Here, the pixel would be shaded the color of the ray shot out from the eye. This ray struck a `Plane` at point <span style="color: violet">X</span>, and which is illuminated by `PointLight` <span style="color: yellow">O</span>, and so it's color would be calculated by passing the `Material` of the `Plane`, along with the ray and the surface normal at <span style="color: violet">X</span> to the illumination routine of `PointLight`.
+
+---
+
+[^1]: Reference: Fundamentals of Computer Graphics; 5th Edition
