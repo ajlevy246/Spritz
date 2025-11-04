@@ -19,7 +19,8 @@ The rendering logic is simple, and looks something like:
 ```python
 pixels = [] #array of RGB values to display
 
-for each pixel on screen:
+for each pixel on screen: #Trace a ray for each pixel in the image to be rendered
+
     #Generate a beam from the camera
     ray = camera.generate_ray(pixel.x, pixel.y)
 
@@ -38,7 +39,7 @@ for each pixel on screen:
         #further logic for shadows and reflections
         ...
 
-        pixels.append(pixel_color)
+    pixels.append(pixel_color)
 ```
 
 ---
@@ -56,7 +57,7 @@ Every scene starts with a `Camera` object, that is used to calculate the angle o
  <span style="color: darkorange">\</span>  <span style="color: green">\|___<span style="color: gray">\</span>__|            \  |</span>                                       / |
   <span style="color: darkorange">w</span>       <span style="color: gray">\</span>               <span style="color: green">\ |</span>                          _           /  |
        <span style="color: darkorange">v - </span><span style="color: gray">\</span>               <span style="color: green">\|</span>                         / \         /   |
-<span style="color: red">______________________________________________________</span>\_/<span style="color: red">________</span>/<span style="color: red">____</span>|<span style="color: red">_</span>
+<span style="color: red">______________________________________________________</span>\_/<span style="color: red">________</span>/<span style="color: red">____</span>|<span style="color: red">___________</span>
 </code></pre>
 </div>
 
