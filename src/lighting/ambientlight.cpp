@@ -1,4 +1,5 @@
 #include "lighting.h"
+#include <cstdio>
 
 // ===== CONSTRUCTORS =====
 AmbientLight::AmbientLight() {

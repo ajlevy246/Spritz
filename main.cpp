@@ -5,12 +5,15 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include <chrono>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
 #include "cameras.h"
 #include "scenes.h"
+
+using namespace std::chrono;
 
 
 // Save function from your snippet
@@ -72,11 +75,11 @@ try {
     double aspect = 1;
     double fov = 114.0;
 
-
     // --- Build scene ---
     Scene scene;
     scene.set_camera(std::make_shared<PerspectiveCam>(eye, lookat, aspect, fov));
     scene.background = Vec3(0.0, 0.0, 0.0);
+    scene.max_bounces = 2;
 
     // Add surfaces
     Material red_matte = Material(
@@ -104,36 +107,47 @@ try {
         64
     );
 
-    Sphere sphere = Sphere(2, Vec3(0, 0, 0), red_matte);
+    Sphere sphere = Sphere(0.25, Vec3(0, 0, 0), blue_mirror);
+    scene.add_surface(&sphere);
     Sphere sphereB = Sphere(2, Vec3(5, 0, 0), gold_metal);
     Triangle tri = Triangle(Vec3(-3, 2, 3), Vec3(-1.5, 5, 5), Vec3(-2, 7, 2), blue_mirror);
     Plane plane = Plane(Vec3(0, 0, 1), Vec3(0, 0, -2), shiny_plane);
-    scene.add_surface(&sphere);
     scene.add_surface(&sphereB);
     scene.add_surface(&tri);
     scene.add_surface(&plane);
 
     // Add a point light
-    // PointLight pointlight = PointLight(Vec3(5, 5, 5), Vec3(10, 10, 10));
+    PointLight pointlight = PointLight(Vec3(5, 5, 5), Vec3(10, 10, 10));
     PointLight pointlightB = PointLight(Vec3(-2, 0, 5), Vec3(25, 25, 25));
     AmbientLight ambient = AmbientLight(Vec3(2, 2, 2));
-    // scene.add_light(&pointlight);
+    scene.add_light(&pointlight);
     scene.add_light(&pointlightB);
     scene.add_light(&ambient);
     
 
     // --- Render ---
-    int width = 1000;
-    int height = 1000;
+    int width = 5000;
+    int height = 5000;
+    auto render_start = high_resolution_clock::now();
     std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
     auto pixels = scene.render(width, height);
+    auto render_end = high_resolution_clock::now();
+    auto render_timing = duration_cast<milliseconds>(render_end - render_start);
+    std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
 
-    // --- Save output ---
-    save_ppm(pixels, width, height, "output.ppm");
+    // --- Save ppm ---
+    // auto ppm_start = high_resolution_clock::now();
+    // save_ppm(pixels, width, height, "output.ppm");
+    // auto ppm_end = high_resolution_clock::now();
+    // auto ppm_timing = duration_cast<milliseconds>(ppm_end - ppm_start);
+    // std::cout << "Saved .ppm in " << ppm_timing.count() << " milliseconds" << std::endl;
 
     // --- Save png
-    std::cout << "Saving" << std::endl;
+    auto png_start = high_resolution_clock::now();
     save_png(pixels, width, height, "output.png");
+    auto png_end = high_resolution_clock::now();
+    auto png_timing = duration_cast<milliseconds>(png_end - png_start);
+    std::cout << "Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
 
 } catch (const std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;

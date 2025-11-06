@@ -28,5 +28,7 @@ struct Intersection {
 class Surface { // Abstract base class for all Surfaces
 public:
     Material material;
+    Surface() {material = Material();}
+    Surface(Material mat) {material = mat;}
     virtual Intersection hit(Ray ray, double t0, double t1) = 0;
 };

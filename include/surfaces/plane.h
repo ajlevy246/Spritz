@@ -7,7 +7,6 @@ class Plane : public Surface {
 public:
     // ===== MEMBERS =====
     Vec3 n, p;
-    Material material;
 
     // ===== CONSTRUCTORS =====
     Plane();

@@ -8,7 +8,6 @@ public:
     // ===== MEMBERS =====
     double r;
     Vec3 c;
-    Material material;
 
     // ===== CONSTRUCTORS =====
     Sphere();
