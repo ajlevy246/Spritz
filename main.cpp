@@ -69,19 +69,7 @@ void save_png(const std::vector<Vec3>& pixels, int width, int height, const std:
 // ===== Entry Point =====
 int main() {
 try {
-    // --- Create camera ---
-    Vec3 eye(4, 8, 1.5);
-    Vec3 lookat(-1, -3, -0.5);
-    double aspect = 1;
-    double fov = 114.0;
-
-    // --- Build scene ---
-    Scene scene;
-    scene.set_camera(std::make_shared<PerspectiveCam>(eye, lookat, aspect, fov));
-    scene.background = Vec3(0.0, 0.0, 0.0);
-    scene.max_bounces = 2;
-
-    // Add surfaces
+    // --- Helper materials ---
     Material red_matte = Material(
         Vec3(0.1, 0.0, 0.0),
         Vec3(0.8, 0.1, 0.1),
@@ -107,27 +95,97 @@ try {
         64
     );
 
-    Sphere sphere = Sphere(0.25, Vec3(0, 0, 0), blue_mirror);
-    scene.add_surface(&sphere);
-    Sphere sphereB = Sphere(2, Vec3(5, 0, 0), gold_metal);
-    Triangle tri = Triangle(Vec3(-3, 2, 3), Vec3(-1.5, 5, 5), Vec3(-2, 7, 2), blue_mirror);
-    Plane plane = Plane(Vec3(0, 0, 1), Vec3(0, 0, -2), shiny_plane);
-    scene.add_surface(&sphereB);
-    scene.add_surface(&tri);
-    scene.add_surface(&plane);
+    // --- Build cornell box ---
+    Scene scene;
+    scene.background = Vec3(0.0, 0.0, 0.0);
 
-    // Add a point light
-    PointLight pointlight = PointLight(Vec3(5, 5, 5), Vec3(10, 10, 10));
-    PointLight pointlightB = PointLight(Vec3(-2, 0, 5), Vec3(25, 25, 25));
-    AmbientLight ambient = AmbientLight(Vec3(2, 2, 2));
-    scene.add_light(&pointlight);
-    scene.add_light(&pointlightB);
-    scene.add_light(&ambient);
-    
+    // --- Create camera ---
+    Vec3 eye(0, 25, 2);
+    Vec3 lookat(0, -1, -0.3);
+    double aspect = 1;
+    double fov = 114.0;
+    scene.set_camera(std::make_shared<PerspectiveCam>(eye, lookat, aspect, fov));
+
+    // --- Walls ---
+    Plane left = Plane( // Red
+        Vec3(2, 0, 0),
+        Vec3(-1, 0, 0),
+        Material(
+            Vec3(0, 0, 0),
+            Vec3(0.75, 0.1, 0.1),
+            Vec3(0, 0, 0),
+            0
+        )
+    );
+    Plane right = Plane( // Blue
+        Vec3(-2, 0, 0),
+        Vec3(1, 0, 0),
+        Material(
+            Vec3(0, 0, 0),
+            Vec3(0.1, 0.1, 0.75),
+            Vec3(0, 0, 0),
+            0
+        )
+    );
+    Plane back = Plane( // White
+        Vec3(0, -1, 0),
+        Vec3(0, 1, 0),
+        Material(
+            Vec3(0, 0, 0),
+            Vec3(0.5, 0.5, 0.5),
+            Vec3(0, 0, 0),
+            0
+        )
+    );
+    Plane floor = Plane( // White
+        Vec3(0, 0, 0),
+        Vec3(0, 0, 1),
+        Material(
+            Vec3(0, 0, 0),
+            Vec3(0.5, 0.5, 0.5),
+            Vec3(0, 0, 0),
+            0
+        )
+    );
+    Plane ceiling = Plane( // White
+        Vec3(0, 0, 5),
+        Vec3(0, 0, -1),
+        Material(
+            Vec3(0, 0, 0),
+            Vec3(0.5, 0.5, 0.5),
+            Vec3(0, 0, 0),
+            0
+        )
+    );
+
+    // --- Inner Objects ---
+    Sphere sphere = Sphere( // Gold Metal
+        0.5,
+        Vec3(0, 2, -0.5),
+        gold_metal
+    );
+
+    // --- Light Sources ---
+    PointLight light = PointLight(
+        Vec3(0, 3, 4),
+        Vec3(20, 20, 20)
+    );
+
+    // --- Add Objects ---
+    scene.add_surface(&left);
+    scene.add_surface(&right);
+    scene.add_surface(&back);
+    scene.add_surface(&floor);
+    scene.add_surface(&ceiling);
+
+    scene.add_surface(&sphere);
+
+    // --- Add lights ---
+    scene.add_light(&light);
 
     // --- Render ---
-    int width = 5000;
-    int height = 5000;
+    int width = 1000;
+    int height = 1000;
     auto render_start = high_resolution_clock::now();
     std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
     auto pixels = scene.render(width, height);
