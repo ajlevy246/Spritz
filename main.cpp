@@ -71,7 +71,7 @@ int main() {
 try {
     // --- Helper materials ---
     Material red_matte = Material(
-        Vec3(0.1, 0.0, 0.0),
+        Vec3(0.1, 0, 0),
         Vec3(0.8, 0.1, 0.1),
         Vec3(0.0, 0.0, 0.0),
         0
@@ -95,104 +95,75 @@ try {
         64
     );
 
-    // --- Build cornell box ---
-    Scene scene;
-    scene.background = Vec3(0.0, 0.0, 0.0);
+    // ===== SCENE ===== 
+    Scene scene = Scene();
+    scene.background = Vec3(0, 0, 0); // black background
+    scene.max_bounces = 2;
 
-    // --- Create camera ---
-    Vec3 eye(0, 25, 2);
-    Vec3 lookat(0, -1, 1);
-    double aspect = 1;
-    double fov = 114.0;
-    scene.set_camera(std::make_shared<PerspectiveCam>(eye, lookat, aspect, fov));
-    // scene.set_camera(std::make_shared<OrthographicCam>(eye, lookat, aspect));
+    scene.set_camera(std::make_shared<PerspectiveCam>(
+        Vec3(4, 8, 1.5),
+        Vec3(-1, -3, -0.5),
+        1.0,
+        114.0
+    ));
+ 
+    // ===== LIGHTS =====
+    PointLight point_a = PointLight(
+        Vec3(10, 3, 0),
+        Vec3(25, 25, 25)
+    );
+    scene.add_light(&point_a);
+    PointLight point_b = PointLight(
+        Vec3(-2, 0, 5),
+        Vec3(25, 25, 25)
+    );
+    scene.add_light(&point_b);
+    AmbientLight ambient = AmbientLight(
+        Vec3(0.5, 0.5, 0.5)
+    );
+    scene.add_light(&ambient);
 
-    // --- Walls ---
-    Plane left = Plane( // Red
-        Vec3(2, 0, 0),
-        Vec3(-1, 0, 0),
-        Material(
-            Vec3(0.1, 0.1, 0.1),
-            Vec3(0.75, 0.1, 0.1),
-            Vec3(0, 0, 0),
-            0
-        )
-    );
-    Plane right = Plane( // Blue
-        Vec3(-2, 0, 0),
-        Vec3(1, 0, 0),
-        Material(
-            Vec3(0.1, 0.1, 0.1),
-            Vec3(0.1, 0.1, 0.75),
-            Vec3(0, 0, 0),
-            0
-        )
-    );
-    Plane back = Plane( // White
-        Vec3(0, 1, 0),
-        Vec3(0, -1, 0),
-        Material(
-            Vec3(0, 0, 0),
-            Vec3(0.5, 0.5, 0.5),
-            Vec3(0, 0, 0),
-            0
-        )
-    );
-    Plane floor = Plane( // White
-        Vec3(0, 0, 1),
+    // ===== OBJECTS =====
+    Sphere sphere_a = Sphere(
+        2, 
         Vec3(0, 0, 0),
-        Material(
-            Vec3(0, 0, 0),
-            Vec3(0.5, 0.5, 0.5),
-            Vec3(0, 0, 0),
-            0
-        )
+        red_matte
     );
-    Plane ceiling = Plane( // White
-        Vec3(0, 0, -1),
-        Vec3(0, 0, 2.5),
-        Material(
-            Vec3(0, 0, 0),
-            Vec3(0.5, 0.5, 0.5),
-            Vec3(0, 0, 0),
-            0
-        )
-    );
-
-    // --- Inner Objects ---
-    Sphere sphere = Sphere( // Gold Metal
-        0.5,
-        Vec3(0, 2, 0.5),
+    scene.add_surface(&sphere_a);
+    Sphere sphere_b = Sphere(
+        2, 
+        Vec3(5, 0, 0),
         gold_metal
     );
-
-    // --- Light Sources ---
-    PointLight lightA = PointLight(
-        Vec3(0, 1, 2),
-        Vec3(2, 2, 2)
+    scene.add_surface(&sphere_b);
+    Triangle tri = Triangle(
+        Vec3(-3.1, 2, 3),
+        Vec3(-1.5, 5.1, 4.9),
+        Vec3(-2, 7, 2),
+        blue_mirror
     );
-
-    // --- Add Objects ---
-    scene.add_surface(&left);
-    scene.add_surface(&right);
-    scene.add_surface(&back);
-    scene.add_surface(&floor);
-    scene.add_surface(&ceiling);
-
-    scene.add_surface(&sphere);
-
-    // --- Add lights ---
-    scene.add_light(&lightA);
+    scene.add_surface(&tri);
+    Plane plane = Plane(
+        Vec3(0, 0, 1),
+        Vec3(0, 0, -2),
+        shiny_plane
+    );
+    scene.add_surface(&plane);
 
     // --- Render ---
     int width = 1000;
     int height = 1000;
-    auto render_start = high_resolution_clock::now();
-    std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
-    auto pixels = scene.render(width, height);
-    auto render_end = high_resolution_clock::now();
-    auto render_timing = duration_cast<milliseconds>(render_end - render_start);
-    std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
+    std::vector<Vec3> pixels;
+    for (int i = 0; i < 50; i++) {
+        auto render_start = high_resolution_clock::now();
+        std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
+        point_a.center.x = point_a.center.x - i*0.2;
+        pixels = scene.render(width, height);
+        auto render_end = high_resolution_clock::now();
+        auto render_timing = duration_cast<milliseconds>(render_end - render_start);
+        save_png(pixels, width, height, "animation/frame" + std::to_string(i) + ".png");
+        std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
+    }
 
     // --- Save ppm ---
     // auto ppm_start = high_resolution_clock::now();
