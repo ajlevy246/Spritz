@@ -5,7 +5,7 @@
 class Triangle : public Surface {
 public:
     // ===== MEMBERS =====
-    Vec3 v1, v2, v3;
+    Vec3 v1, v2, v3, edge1, edge2, normal;
 
     // ===== CONSTRUCTORS =====
     Triangle();
