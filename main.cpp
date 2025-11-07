@@ -159,8 +159,8 @@ try {
     for (int i = 0; i < 240; i++) {
         auto render_start = high_resolution_clock::now();
         std::cout << "Frame: " << i << std::endl;
-        point_a.center.x = point_a.center.x + sin(i)/2 + i / 25;
-        point_a.center.y = point_a.center.y - cos(i)/2 + i / 25;
+        point_a.center.x = 5*cos(i * 360 / 240) + 2;
+        point_a.center.y = 5*sin(i * 360 / 240) + 2;
         pixels = scene.render(width, height);
         auto render_end = high_resolution_clock::now();
         auto render_timing = duration_cast<milliseconds>(render_end - render_start);
