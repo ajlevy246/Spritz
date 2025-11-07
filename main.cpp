@@ -43,7 +43,7 @@ std::cout << ".ppm image written to " << filename << std::endl;
 
 void save_png(const std::vector<Vec3>& pixels, int width, int height, const std::string& filename) {
     
-    printf("writing to buffer\n");
+    // printf("writing to buffer\n");
     // Create buffer for RGB values (3 channels)
     std::vector<unsigned char> buffer(width * height * 3);
     
@@ -55,7 +55,7 @@ void save_png(const std::vector<Vec3>& pixels, int width, int height, const std:
         buffer[i * 3 + 2] = static_cast<unsigned char>(std::clamp(color.z, 0.0, 1.0) * 255);
     }
     
-    printf("writing to .png\n");
+    // printf("writing to .png\n");
     // Write PNG file (3 channels, RGB)
     int success = stbi_write_png(filename.c_str(), width, height, 3, buffer.data(), width * 3);
     
@@ -63,7 +63,7 @@ void save_png(const std::vector<Vec3>& pixels, int width, int height, const std:
         throw std::runtime_error("Failed to write PNG file: " + filename);
     }
     
-    std::cout << ".png image written to " << filename << std::endl;
+    // std::cout << ".png image written to " << filename << std::endl;
 }
 
 // ===== Entry Point =====
@@ -153,17 +153,22 @@ try {
     // --- Render ---
     int width = 1000;
     int height = 1000;
+    std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
     std::vector<Vec3> pixels;
-    for (int i = 0; i < 50; i++) {
+    auto total_start = high_resolution_clock::now();
+    for (int i = 0; i < 240; i++) {
         auto render_start = high_resolution_clock::now();
-        std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
-        point_a.center.x = point_a.center.x - i*0.2;
+        std::cout << "Frame: " << i << std::endl;
+        point_a.center.x = point_a.center.x + sin(i)/2 + i / 25;
+        point_a.center.y = point_a.center.y - cos(i)/2 + i / 25;
         pixels = scene.render(width, height);
         auto render_end = high_resolution_clock::now();
         auto render_timing = duration_cast<milliseconds>(render_end - render_start);
         save_png(pixels, width, height, "animation/frame" + std::to_string(i) + ".png");
-        std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
+        // std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
     }
+    auto total_end = high_resolution_clock::now();
+    std::cout << "Animated in " << duration_cast<seconds>(total_end - total_start).count() << " seconds." << std::endl;
 
     // --- Save ppm ---
     // auto ppm_start = high_resolution_clock::now();
