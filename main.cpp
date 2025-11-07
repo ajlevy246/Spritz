@@ -80,7 +80,7 @@ try {
         Vec3(0.05, 0.04, 0.0),
         Vec3(0.83, 0.68, 0.21),
         Vec3(0.9, 0.8, 0.4),
-        128
+        64
     );
     Material blue_mirror = Material(
         Vec3(0.0, 0.0, 0.1),
@@ -101,17 +101,18 @@ try {
 
     // --- Create camera ---
     Vec3 eye(0, 25, 2);
-    Vec3 lookat(0, -1, -0.3);
+    Vec3 lookat(0, -1, 1);
     double aspect = 1;
     double fov = 114.0;
     scene.set_camera(std::make_shared<PerspectiveCam>(eye, lookat, aspect, fov));
+    // scene.set_camera(std::make_shared<OrthographicCam>(eye, lookat, aspect));
 
     // --- Walls ---
     Plane left = Plane( // Red
         Vec3(2, 0, 0),
         Vec3(-1, 0, 0),
         Material(
-            Vec3(0, 0, 0),
+            Vec3(0.1, 0.1, 0.1),
             Vec3(0.75, 0.1, 0.1),
             Vec3(0, 0, 0),
             0
@@ -121,15 +122,15 @@ try {
         Vec3(-2, 0, 0),
         Vec3(1, 0, 0),
         Material(
-            Vec3(0, 0, 0),
+            Vec3(0.1, 0.1, 0.1),
             Vec3(0.1, 0.1, 0.75),
             Vec3(0, 0, 0),
             0
         )
     );
     Plane back = Plane( // White
-        Vec3(0, -1, 0),
         Vec3(0, 1, 0),
+        Vec3(0, -1, 0),
         Material(
             Vec3(0, 0, 0),
             Vec3(0.5, 0.5, 0.5),
@@ -138,8 +139,8 @@ try {
         )
     );
     Plane floor = Plane( // White
-        Vec3(0, 0, 0),
         Vec3(0, 0, 1),
+        Vec3(0, 0, 0),
         Material(
             Vec3(0, 0, 0),
             Vec3(0.5, 0.5, 0.5),
@@ -148,8 +149,8 @@ try {
         )
     );
     Plane ceiling = Plane( // White
-        Vec3(0, 0, 5),
         Vec3(0, 0, -1),
+        Vec3(0, 0, 2.5),
         Material(
             Vec3(0, 0, 0),
             Vec3(0.5, 0.5, 0.5),
@@ -161,14 +162,14 @@ try {
     // --- Inner Objects ---
     Sphere sphere = Sphere( // Gold Metal
         0.5,
-        Vec3(0, 2, -0.5),
+        Vec3(0, 2, 0.5),
         gold_metal
     );
 
     // --- Light Sources ---
-    PointLight light = PointLight(
-        Vec3(0, 3, 4),
-        Vec3(20, 20, 20)
+    PointLight lightA = PointLight(
+        Vec3(0, 1, 2),
+        Vec3(2, 2, 2)
     );
 
     // --- Add Objects ---
@@ -181,7 +182,7 @@ try {
     scene.add_surface(&sphere);
 
     // --- Add lights ---
-    scene.add_light(&light);
+    scene.add_light(&lightA);
 
     // --- Render ---
     int width = 1000;

@@ -8,7 +8,7 @@ BUILD_DIR := build
 INCLUDE_DIR := include
 
 # Output executable
-TARGET := raytracer
+TARGET := spritz
 
 # Find all .cpp files recursively in src and the root directory
 SRC_FILES := $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp) main.cpp
