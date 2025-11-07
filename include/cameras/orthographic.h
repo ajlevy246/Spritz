@@ -6,7 +6,7 @@ class OrthographicCam : public Camera {
 public:
     // ===== MEMBERS =====
     Vec3 eye, u, v, w;
-    double aspect, fov;
+    double aspect;
         
     // ===== CONSTRUCTORS =====
     OrthographicCam();
