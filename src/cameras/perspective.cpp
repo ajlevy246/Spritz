@@ -21,7 +21,7 @@ PerspectiveCam::PerspectiveCam(Vec3 look_from, Vec3 look_at, double aspect_, dou
 
     Vec3 up = Vec3(0, 0, 1);
     eye = look_from;
-    w = eye - look_at;
+    w = (eye - look_at).normalized();
     u = up.cross(w).normalized();
     v = w.cross(u).normalized();
 }
