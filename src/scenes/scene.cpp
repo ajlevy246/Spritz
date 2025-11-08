@@ -123,8 +123,6 @@ Vec3 Scene::shade_ray(Ray* ray, int bounce) {
         Vec3 ks = hit_obj.surface->material.ks;
         shade = shade + ks * shade_ray(&reflection, bounce + 1); // recurse
     }
-
-    return shade;
     
 }
 
