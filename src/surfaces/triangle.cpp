@@ -5,13 +5,7 @@
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 
 // ===== CONSTRUCTORS =====
-Triangle::Triangle() {
-    v1 = Vec3(1, 0, 0);
-    v2 = Vec3(0, 1, 0);
-    v3 = Vec3(0, 0, 1);
-    material = Material();
-}
-Triangle::Triangle(Vec3 vert1, Vec3 vert2, Vec3 vert3, Material mat) {
+Triangle::Triangle(Vec3 vert1, Vec3 vert2, Vec3 vert3, Material* mat) {
     v1 = vert1;
     v2 = vert2;
     v3 = vert3;

@@ -9,6 +9,7 @@ public:
 
     // ===== CONSTRUCTORS =====
     Vec3();
+    Vec3(double c);
     Vec3(double new_x, double new_y, double new_z);
 
     // ===== OPERATORS =====
@@ -20,10 +21,11 @@ public:
     Vec3 operator/(const Vec3& v);
 
     // ===== METHODS =====
-    double dot(const Vec3& v);
-    Vec3 cross(const Vec3& v);
-    double length();
-    double length_sq();
     void normalize();
-    Vec3 normalized();
+
+    double dot(const Vec3& v) const;
+    Vec3 cross(const Vec3& v) const;
+    double length() const;
+    double length_sq() const;
+    Vec3 normalized() const;
 };

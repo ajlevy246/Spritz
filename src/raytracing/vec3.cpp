@@ -6,7 +6,11 @@ Vec3::Vec3() {
     y = 0.0;
     z = 0.0;
 }
-
+Vec3::Vec3(double c) {
+    x = c;
+    y = c;
+    z = c;
+}
 Vec3::Vec3(double new_x, double new_y, double new_z) {
     x = new_x;
     y = new_y;
@@ -39,22 +43,22 @@ Vec3 Vec3::operator/(const Vec3& v) {
 }
 
 // ===== METHODS =====
-double Vec3::dot(const Vec3& v) {
+double Vec3::dot(const Vec3& v) const {
     return x * v.x + y * v.y + z * v.z;
 }
 
-Vec3 Vec3::cross(const Vec3& v) {
+Vec3 Vec3::cross(const Vec3& v) const {
     double cross_x = y*v.z - z*v.y;
     double cross_y = z*v.x - x*v.z;
     double cross_z = x*v.y - y*v.x;
     return Vec3(cross_x, cross_y, cross_z); 
 }
 
-double Vec3::length() {
+double Vec3::length() const {
     return sqrt(x*x + y*y + z*z);
 }
 
-double Vec3::length_sq() {
+double Vec3::length_sq() const {
     return (x*x + y*y + z*z);
 }
 
@@ -67,7 +71,7 @@ void Vec3::normalize() {
     }
 }
 
-Vec3 Vec3::normalized() {
+Vec3 Vec3::normalized() const {
     double len = length();
     if (len > 0.0) {
         return Vec3(x / len, y / len, z / len);

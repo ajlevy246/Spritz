@@ -17,7 +17,7 @@ struct Ray {
     };
 
     // ===== METHODS =====
-    Vec3 evaluate(double t) {
-        return o + d * t;
+    Vec3 evaluate(double t) const {
+        return Vec3(o) + Vec3(d) * t;
     };
 };

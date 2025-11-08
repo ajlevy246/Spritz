@@ -5,9 +5,10 @@
 
 #include "cameras.h"
 #include "lighting.h"
-#include "materials.h"
 #include "raytracing.h"
 #include "surfaces.h"
+
+const int MAX_BOUNCES = 2;
 
 class Scene {
 public:
@@ -20,7 +21,7 @@ public:
     
     // ===== CONSTRUCTORS =====
     Scene();
-    Scene(std::shared_ptr<Camera> camera, int max_reflections);
+    Scene(std::shared_ptr<Camera> camera);
 
     // ===== METHODS =====
     void load_background(const std::string  &filename);
@@ -28,10 +29,10 @@ public:
     void add_light(Light* new_light);
     void set_camera(std::shared_ptr<Camera> new_camera);
 
-    Vec3 project_background(Ray* ray);
-    Intersection hit(Ray* ray, double t0, double t1);
-    Vec3 shade_ray(Ray* ray, int bounce);
-    std::vector<Vec3> render(int width, int height);
+    Vec3 project_background(const Ray& ray) const;
+    Intersection hit(const Ray& ray, const double t0, const double t1) const;
+    Vec3 shade_ray(const Ray& ray, int bounce) const;
+    std::vector<Vec3> render(int width, int height) const;
     
 private:
     int bg_width = 0;

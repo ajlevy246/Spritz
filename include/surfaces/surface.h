@@ -2,11 +2,10 @@
 
 #include <vector>
 
-#include "raytracing/ray.h"
-#include "raytracing/vec3.h"
-#include "materials.h"
+#include "raytracing.h"
 
 class Surface;
+class Material;
 
 struct Intersection {
     // ===== MEMBERS =====
@@ -27,8 +26,6 @@ struct Intersection {
 
 class Surface { // Abstract base class for all Surfaces
 public:
-    Material material;
-    Surface() {material = Material();}
-    Surface(Material mat) {material = mat;}
+    Material* material;
     virtual Intersection hit(Ray ray, double t0, double t1) = 0;
 };

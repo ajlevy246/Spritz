@@ -3,12 +3,7 @@
 #include "surfaces.h"
 
 // ===== CONSTRUCTORS =====
-Plane::Plane() {
-    n = Vec3(0, 0, 1);
-    p = Vec3(0, 0, -1);
-    material = Material();
-}
-Plane::Plane(Vec3 plane_normal, Vec3 plane_point, Material mat) {
+Plane::Plane(Vec3 plane_normal, Vec3 plane_point, Material* mat) {
     n = plane_normal;
     p = plane_point;
     material = mat;

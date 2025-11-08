@@ -19,11 +19,9 @@
 Scene::Scene() {
     cam = std::shared_ptr<PerspectiveCam>();
     background_data = nullptr;
-    max_bounces = 1; // 1 reflection bounce by default
 }
-Scene::Scene(std::shared_ptr<Camera> camera, int max_reflections) {
+Scene::Scene(std::shared_ptr<Camera> camera) {
     cam = camera;
-    max_bounces = max_reflections;
 }
 
 // ===== METHODS =====
@@ -35,8 +33,8 @@ void Scene::load_background(const std::string &filename) {
         exit(1);
     }
 
-    std::cout << "Loaded background: " << filename
-              << " (" << bg_width << "x" << bg_height << ")" << std::endl;
+    // std::cout << "Loaded background: " << filename
+    //           << " (" << bg_width << "x" << bg_height << ")" << std::endl;
 }
 void Scene::add_surface(Surface* new_object) {
     objects.push_back(new_object);
@@ -48,13 +46,13 @@ void Scene::set_camera(std::shared_ptr<Camera> new_camera) {
     cam = new_camera;
 }
 
-Vec3 Scene::project_background(Ray* ray) {
+Vec3 Scene::project_background(const Ray& ray) const {
     if (!background_data) {
         printf("not here!\n");
         return Vec3(0.0, 0.0, 0.0); // default black
     }
 
-    Vec3 d = ray->d.normalized();
+    Vec3 d = ray.d.normalized();
 
     // Convert to spherical coordinates
     float theta = atan2(d.y, d.x);  // [-π, π]
@@ -90,17 +88,17 @@ Vec3 Scene::project_background(Ray* ray) {
 }
 
 // Simple tracing logic: check if a ray has hit an object in the scene
-Intersection Scene::hit(Ray* ray, double t0, double t1) {
+Intersection Scene::hit(const Ray& ray, double t0, double t1) const {
     Intersection hit = Intersection();
     for (Surface* object : objects) {
-        Intersection curr = object->hit(*ray, t0, t1);
+        Intersection curr = object->hit(ray, t0, t1);
         if (curr.t <= t1 && curr.t >= t0) { t1=curr.t; hit = curr; }
     }
     return hit;
 }
 
 // Main ray tracing logic. Returns the color of a single pixel
-Vec3 Scene::shade_ray(Ray* ray, int bounce) {
+Vec3 Scene::shade_ray(const Ray& ray, int bounce) const {
 
     // Trace ray through the scene
     Intersection hit_obj = hit(ray, 0, INFINITY);
@@ -111,23 +109,25 @@ Vec3 Scene::shade_ray(Ray* ray, int bounce) {
 
     // Calculate illumination at the point of intersection
     Vec3 shade = Vec3(0, 0, 0);
-    for (Light* light : lights) {
-        Vec3 light_contribution = light->illuminate(this, ray, &hit_obj);
-        shade = shade + light_contribution;
-    }
-    // Calculate illumination from reflections
-    if (bounce < max_bounces) {
-        Vec3 reflection_origin = ray->evaluate(hit_obj.t) + hit_obj.normal * EPS; 
-        Vec3 reflection_direction = ray->d - hit_obj.normal * 2 * ray->d.dot(hit_obj.normal);
-        Ray reflection = Ray(reflection_origin, reflection_direction);
-        Vec3 ks = hit_obj.surface->material.ks;
-        shade = shade + ks * shade_ray(&reflection, bounce + 1); // recurse
-    }
+    shade = hit_obj.surface->material->shade(*this, ray, hit_obj, bounce);
+    return shade;
+    // for (Light* light : lights) {
+    //     Vec3 light_contribution = light->illuminate(this, ray, &hit_obj);
+    //     shade = shade + light_contribution;
+    // }
+    // // Calculate illumination from reflections
+    // if (bounce < max_bounces) {
+    //     Vec3 reflection_origin = ray->evaluate(hit_obj.t) + hit_obj.normal * EPS; 
+    //     Vec3 reflection_direction = ray->d - hit_obj.normal * 2 * ray->d.dot(hit_obj.normal);
+    //     Ray reflection = Ray(reflection_origin, reflection_direction);
+    //     Vec3 ks = hit_obj.surface->material.ks;
+    //     shade = shade + ks * shade_ray(&reflection, bounce + 1); // recurse
+    // }
     
 }
 
 // Main rendering logic. Returns a 1d array of pixel values
-std::vector<Vec3> Scene::render(int width, int height) {
+std::vector<Vec3> Scene::render(int width, int height) const {
     std::vector pixels(width * height, Vec3(0, 0, 0)); // Initialize image to black
 
     // Iterate over pixels
@@ -139,7 +139,7 @@ std::vector<Vec3> Scene::render(int width, int height) {
             Ray ray = cam->generate_ray(x, y, width, height); 
 
             // Trace ray
-            Vec3 color = shade_ray(&ray, 0);
+            Vec3 color = shade_ray(ray, 0);
             // Add to pixel buffer
             pixels[idx] = color;
         }

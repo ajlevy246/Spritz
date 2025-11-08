@@ -11,7 +11,7 @@ public:
 
     // ===== CONSTRUCTORS =====
     Sphere();
-    Sphere(double radius, Vec3 center, Material mat);
+    Sphere(double radius, Vec3 center, Material* mat);
 
     // ===== METHODS =====
     struct Intersection hit(Ray ray, double t0, double t1);

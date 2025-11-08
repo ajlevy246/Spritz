@@ -6,12 +6,7 @@
 #include "materials.h"
 
 // ===== CONSTRUCTORS =====
-Sphere::Sphere() {
-    r = 1;
-    c = Vec3();
-    material = Material();    
-}
-Sphere::Sphere(double radius, Vec3 center, Material mat) {
+Sphere::Sphere(double radius, Vec3 center, Material* mat) {
     r = radius;
     c = center;
     material = mat;

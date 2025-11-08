@@ -10,7 +10,7 @@ public:
 
     // ===== CONSTRUCTORS =====
     Plane();
-    Plane(Vec3 plane_normal, Vec3 plane_point, Material mat);
+    Plane(Vec3 plane_normal, Vec3 plane_point, Material* mat);
 
     // ===== METHODS =====
     struct Intersection hit(Ray ray, double t0, double t1);

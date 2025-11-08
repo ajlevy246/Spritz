@@ -1,13 +1,13 @@
 #pragma once
 
 #include "raytracing.h"
-#include "materials.h"
-#include "surfaces.h"
 
-class Scene; // forward declaration to avoid circular dependency;
+class Scene;
 
+// Abstract base class for Lighting
 class Light {
 public: 
-    // Abstract base class for Lighting
-    virtual Vec3 illuminate(Scene* scene, Ray* ray, Intersection* intersection) = 0;
+    virtual Vec3 direction_from(const Vec3& point) = 0;
+    virtual double distance_from(const Vec3& point) = 0;
+    virtual Vec3 intensity_at(const Vec3& point) = 0;
 };
