@@ -1,6 +1,12 @@
 #include "scenes.h"
 
-#include <stdio.h>
+// #include <stdio.h>
+#include <cstdio>
+#include <iostream>
+#include <algorithm>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h" // for loading background images
 
 // ===== MEMBERS =====
 // Camera* cam;
@@ -12,16 +18,27 @@
 // ===== CONSTRUCTORS =====
 Scene::Scene() {
     cam = std::shared_ptr<PerspectiveCam>();
-    background = Vec3(0, 0, 0); // Black background color by default
+    background_data = nullptr;
     max_bounces = 1; // 1 reflection bounce by default
 }
-Scene::Scene(std::shared_ptr<Camera> camera, Vec3 background_color, int max_reflections) {
+Scene::Scene(std::shared_ptr<Camera> camera, int max_reflections) {
     cam = camera;
-    background = background_color;
     max_bounces = max_reflections;
 }
 
 // ===== METHODS =====
+void Scene::load_background(const std::string &filename) {
+    stbi_set_flip_vertically_on_load(true); // depends on coordinate system
+
+    background_data = stbi_loadf(filename.c_str(), &bg_width, &bg_height, &bg_channels, 3);
+    if (!background_data) {
+        std::cerr << "Failed to load background image: " << filename << std::endl;
+        exit(1);
+    }
+
+    std::cout << "Loaded background: " << filename
+              << " (" << bg_width << "x" << bg_height << ")" << std::endl;
+}
 void Scene::add_surface(Surface* new_object) {
     objects.push_back(new_object);
 }
@@ -30,6 +47,44 @@ void Scene::add_light(Light* new_light) {
 }
 void Scene::set_camera(std::shared_ptr<Camera> new_camera) {
     cam = new_camera;
+}
+
+Vec3 Scene::project_background(Ray* ray) {
+    if (!background_data) {
+        printf("not here!\n");
+        return Vec3(0.0, 0.0, 0.0); // default black
+    }
+
+    Vec3 d = ray->d.normalized();
+
+    // Convert to spherical coordinates
+    float theta = atan2(d.z, d.x);  // [-π, π]
+    float phi   = asin(d.y);        // [-π/2, π/2]
+
+    // Convert to texture coordinates [0,1]
+    float u = (theta + M_PI) / (2.0f * M_PI);
+    float v = (phi + M_PI / 2.0f) / M_PI;
+
+    // Wrap horizontally, clamp vertically
+    u = fmodf(u, 1.0f);
+    if (u < 0.0f) u += 1.0f;
+    v = std::clamp(v, 0.0f, 1.0f);
+
+    // Convert to pixel coordinates
+    int x = std::clamp(int(u * bg_width), 0, bg_width - 1);
+    // int y = std::clamp(int((1.0f - v) * bg_height), 0, bg_height - 1); // flip vertically
+    int y = std::clamp(int((1 - v) * bg_height), 0, bg_height - 1); // flip vertically
+
+    int index = (y * bg_width + x) * 3;
+
+    // Gamma correct and reinhard tone map
+    Vec3 loaded = Vec3(
+        pow(background_data[index + 0], 1.0 / 2.2),
+        pow(background_data[index + 1], 1.0 / 2.2),
+        pow(background_data[index + 2], 1.0 / 2.2)
+    );
+    loaded = loaded / (Vec3(1, 1, 1) + loaded);
+    return loaded;
 }
 
 // Simple tracing logic: check if a ray has hit an object in the scene
@@ -49,7 +104,7 @@ Vec3 Scene::shade_ray(Ray* ray, int bounce) {
     Intersection hit_obj = hit(ray, 0, INFINITY);
 
     if (hit_obj.t == INFINITY) { // no object in the scene was hit
-        return background;
+        return project_background(ray);
     }
 
     // Calculate illumination at the point of intersection

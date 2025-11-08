@@ -15,21 +15,28 @@ public:
     std::shared_ptr<Camera> cam;
     std::vector<Surface*> objects;
     std::vector<Light*> lights;
-    Vec3 background;
+    float* background_data; // loaded from .hdr file
     int max_bounces;
     
     // ===== CONSTRUCTORS =====
     Scene();
-    Scene(std::shared_ptr<Camera> camera, Vec3 background_color, int max_reflections);
+    Scene(std::shared_ptr<Camera> camera, int max_reflections);
 
     // ===== METHODS =====
+    void load_background(const std::string  &filename);
     void add_surface(Surface* new_object);
     void add_light(Light* new_light);
     void set_camera(std::shared_ptr<Camera> new_camera);
+
+    Vec3 project_background(Ray* ray);
     Intersection hit(Ray* ray, double t0, double t1);
     Vec3 shade_ray(Ray* ray, int bounce);
     std::vector<Vec3> render(int width, int height);
     
+private:
+    int bg_width = 0;
+    int bg_height = 0;
+    int bg_channels = 0;
 };
 
 // class SurfaceGroup : public Surface {
