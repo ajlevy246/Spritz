@@ -97,7 +97,7 @@ try {
 
     // ===== SCENE ===== 
     Scene scene = Scene();
-    scene.load_background("backgrounds/treetop.hdr");
+    scene.load_background("backgrounds/evening.hdr");
     scene.max_bounces = 2;
 
     scene.set_camera(std::make_shared<PerspectiveCam>(
@@ -112,16 +112,16 @@ try {
         Vec3(10, 3, 0),
         Vec3(50, 50, 50)
     );
-    scene.add_light(&point_a);
+    // scene.add_light(&point_a);
     PointLight point_b = PointLight(
         Vec3(-2, 0, 5),
         Vec3(50, 50, 50)
     );
-    scene.add_light(&point_b);
+    // scene.add_light(&point_b);
     AmbientLight ambient = AmbientLight(
         Vec3(0.5, 0.5, 0.5)
     );
-    scene.add_light(&ambient);
+    // scene.add_light(&ambient);
 
     // ===== OBJECTS =====
     // Sphere sphere_a = Sphere(
@@ -135,45 +135,45 @@ try {
         Vec3(5, 0, 0),
         gold_metal
     );
-    scene.add_surface(&sphere_b);
+    // scene.add_surface(&sphere_b);
     Triangle tri = Triangle(
         Vec3(-3.1, 2, 3),
         Vec3(-1.5, 5.1, 4.9),
         Vec3(-2, 7, 2),
         blue_mirror
     );
-    scene.add_surface(&tri);
+    // scene.add_surface(&tri);
     Plane plane = Plane(
         Vec3(0, 0, 1),
         Vec3(0, 0, -2),
         shiny_plane
     );
-    scene.add_surface(&plane);
+    // scene.add_surface(&plane);
 
     // --- Render ---
-    int width = 5000;
-    int height = 5000;
-    // std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
-    // std::vector<Vec3> pixels;
-    // auto total_start = high_resolution_clock::now();
-    // int nframes = 240;
-    // for (int i = 0; i < nframes; i++) {
-    //     auto render_start = high_resolution_clock::now();
-    //     std::cout << "Frame: " << i << std::endl;
-    //     scene.set_camera(std::make_shared<PerspectiveCam>(
-    //         Vec3(0, 0, 0),
-    //         Vec3(cos(i * 360 / nframes * M_PI / 180), sin(i * 360 / nframes * M_PI / 180), 1),
-    //         1.0,
-    //         114
-    //     ));
-    //     pixels = scene.render(width, height);
-    //     auto render_end = high_resolution_clock::now();
-    //     auto render_timing = duration_cast<milliseconds>(render_end - render_start);
-    //     save_png(pixels, width, height, "animation/frame" + std::to_string(i) + ".png");
-    //     // std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
-    // }
-    // auto total_end = high_resolution_clock::now();
-    // std::cout << "Animated in " << duration_cast<seconds>(total_end - total_start).count() << " seconds." << std::endl;
+    int width = 1500;
+    int height = 1500;
+    std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
+    std::vector<Vec3> pixels;
+    auto total_start = high_resolution_clock::now();
+    int nframes = 240;
+    for (int i = 0; i < nframes; i++) {
+        auto render_start = high_resolution_clock::now();
+        std::cout << "Frame: " << i << std::endl;
+        scene.set_camera(std::make_shared<PerspectiveCam>(
+            Vec3(0, 0, 0),
+            Vec3(cos(i * 360 / nframes * M_PI / 180), sin(i * 360 / nframes * M_PI / 180), 0),
+            1.0,
+            114
+        ));
+        pixels = scene.render(width, height);
+        auto render_end = high_resolution_clock::now();
+        auto render_timing = duration_cast<milliseconds>(render_end - render_start);
+        save_png(pixels, width, height, "animation/frame" + std::to_string(i) + ".png");
+        // std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
+    }
+    auto total_end = high_resolution_clock::now();
+    std::cout << "Animated in " << duration_cast<seconds>(total_end - total_start).count() << " seconds." << std::endl;
 
     // --- Save ppm ---
     // auto ppm_start = high_resolution_clock::now();
@@ -183,13 +183,14 @@ try {
     // std::cout << "Saved .ppm in " << ppm_timing.count() << " milliseconds" << std::endl;
 
     // --- Save png
-    auto png_start = high_resolution_clock::now();
-    auto pixels = scene.render(width, height);
-    std::cout << "Writing to .png" << std::endl;
-    save_png(pixels, width, height, "output.png");
-    auto png_end = high_resolution_clock::now();
-    auto png_timing = duration_cast<milliseconds>(png_end - png_start);
-    std::cout << "Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
+    // auto png_start = high_resolution_clock::now();
+    // std::cout << "Rendering" << std::endl;
+    // auto pixels = scene.render(width, height);
+    // std::cout << "Writing to .png" << std::endl;
+    // save_png(pixels, width, height, "output.png");
+    // auto png_end = high_resolution_clock::now();
+    // auto png_timing = duration_cast<milliseconds>(png_end - png_start);
+    // std::cout << "Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
 
 } catch (const std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;
