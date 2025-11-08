@@ -17,6 +17,7 @@ public:
     Vec3 operator*(double c);      // Scalar mult
     Vec3 operator*(const Vec3& v); // Component-wise mult
     Vec3 operator/(double c);
+    Vec3 operator/(const Vec3& v);
 
     // ===== METHODS =====
     double dot(const Vec3& v);

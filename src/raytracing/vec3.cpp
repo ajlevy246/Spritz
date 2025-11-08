@@ -34,6 +34,10 @@ Vec3 Vec3::operator/(double c) {
     return Vec3(x/c, y/c, z/c);
 }
 
+Vec3 Vec3::operator/(const Vec3& v) {
+    return Vec3(x / v.x, y / v.y, z/v.z);
+}
+
 // ===== METHODS =====
 double Vec3::dot(const Vec3& v) {
     return x * v.x + y * v.y + z * v.z;
