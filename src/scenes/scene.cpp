@@ -28,7 +28,6 @@ Scene::Scene(std::shared_ptr<Camera> camera, int max_reflections) {
 
 // ===== METHODS =====
 void Scene::load_background(const std::string &filename) {
-    stbi_set_flip_vertically_on_load(true); // depends on coordinate system
 
     background_data = stbi_loadf(filename.c_str(), &bg_width, &bg_height, &bg_channels, 3);
     if (!background_data) {
@@ -58,8 +57,8 @@ Vec3 Scene::project_background(Ray* ray) {
     Vec3 d = ray->d.normalized();
 
     // Convert to spherical coordinates
-    float theta = atan2(d.z, d.x);  // [-π, π]
-    float phi   = asin(d.y);        // [-π/2, π/2]
+    float theta = atan2(d.y, d.x);  // [-π, π]
+    float phi   = asin(d.z);        // [-π/2, π/2]
 
     // Convert to texture coordinates [0,1]
     float u = (theta + M_PI) / (2.0f * M_PI);
@@ -72,18 +71,21 @@ Vec3 Scene::project_background(Ray* ray) {
 
     // Convert to pixel coordinates
     int x = std::clamp(int(u * bg_width), 0, bg_width - 1);
-    // int y = std::clamp(int((1.0f - v) * bg_height), 0, bg_height - 1); // flip vertically
-    int y = std::clamp(int((1 - v) * bg_height), 0, bg_height - 1); // flip vertically
+    int y = std::clamp(int((1.0f - v) * bg_height), 0, bg_height - 1); // flip vertically
 
     int index = (y * bg_width + x) * 3;
 
     // Gamma correct and reinhard tone map
     Vec3 loaded = Vec3(
-        pow(background_data[index + 0], 1.0 / 2.2),
-        pow(background_data[index + 1], 1.0 / 2.2),
-        pow(background_data[index + 2], 1.0 / 2.2)
+        background_data[index + 0],
+        background_data[index + 1],
+        background_data[index + 2]
     );
     loaded = loaded / (Vec3(1, 1, 1) + loaded);
+    loaded.x = pow(loaded.x, 1.0 / 2.2);
+    loaded.y = pow(loaded.y, 1.0 / 2.2);
+    loaded.z = pow(loaded.z, 1.0 / 2.2);
+
     return loaded;
 }
 
