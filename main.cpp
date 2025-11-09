@@ -70,145 +70,195 @@ void save_png(const std::vector<Vec3>& pixels, int width, int height, const std:
 int main() {
 try {
     // --- Helper materials ---
-    Material matte(
-        Vec3(0.05, 0.05, 0.05),
-        Vec3(0.7, 0.4, 0.3),
-        Vec3(0.0, 0.0, 0.0),
-        8,
+
+    // ===== METALS =====
+    Material chrome(
+        Vec3(0.25, 0.25, 0.25),  // ka - ambient
+        Vec3(0.4, 0.4, 0.4),     // kd - diffuse
+        Vec3(0.774597, 0.774597, 0.774597), // ks - specular
+        76,                       // shininess
+        1.0,                      // ior (not used for opaque)
+        0.0,                      // filter (opaque)
+        0.5,                      // reflection (highly reflective)
+        Vec3(1, 1, 1)            // filter_color (not used)
+    );
+
+    Material gold(
+        Vec3(0.24725, 0.1995, 0.0745),
+        Vec3(0.75164, 0.60648, 0.22648),
+        Vec3(0.628281, 0.555802, 0.366065),
+        51,
         1.0,
         0.0,
-        0.0
+        0.7,
+        Vec3(1, 1, 1)
     );
-    Material plastic(
-        Vec3(0.05),                  // ka
-        Vec3(0.6, 0.1, 0.1),         // kd (reddish)
-        Vec3(0.6),                   // ks (white specular tint)
-        64,                          // shininess
-        1.3,                         // ior (typical for plastics)
-        0.0,                         // filter (opaque)
-        0.1                          // reflection (slight mirror contribution)
-    );
-    Material metal(
-        Vec3(0.05),
-        Vec3(0.2, 0.2, 0.2),         // kd (subtle diffuse base)
-        Vec3(0.9, 0.8, 0.7),         // ks (gold-like specular)
-        128,
-        2.5,                         // ior (metals have high apparent IOR)
-        0.0,                         // filter (opaque)
-        0.9                          // reflection (strong mirror)
-    );
-    Material glass(
-        Vec3(0.02),
-        Vec3(0.1),                   // kd (almost black diffuse)
-        Vec3(0.9),                   // ks (white specular)
-        128,
-        1.52,                        // ior (common for glass)
-        1.0,                         // filter (fully transmissive)
-        0.05                         // reflection (small base reflection)
-    );
-    Material water(
-        Vec3(0.02),
-        Vec3(0.1, 0.15, 0.2),        // kd (bluish)
-        Vec3(0.8),                   // ks
-        64,
-        1.33,                        // ior (water)
-        0.9,                         // filter (transmissive)
-        0.05                         // reflection (small)
-    );
-    Material frosted(
-        Vec3(0.05),
-        Vec3(0.5),                   // kd (light gray diffuse)
-        Vec3(0.4),                   // ks
-        16,                          // shininess (blurry specular)
-        1.45,                        // ior (glass-like)
-        0.7,                         // filter (partially transmissive)
-        0.2                          // reflection
-    );
-    Material blue_glass(
-        Vec3(0.02),              // ka: tiny ambient
-        Vec3(0.05),              // kd: almost no diffuse
-        Vec3(0.8),               // ks: bright specular
-        128,                     // shiny highlights
-        1.52,                    // ior: standard glass
-        1.0,                     // filter: fully transparent
-        0.05                     // reflection: small
-    );
-    Material green_crystal(
-        Vec3(0.01),
-        Vec3(0.02),
-        Vec3(0.8),
-        256,
-        1.8,                     // higher IOR (stronger refraction)
+
+    Material copper(
+        Vec3(0.19125, 0.0735, 0.0225),
+        Vec3(0.7038, 0.27048, 0.0828),
+        Vec3(0.256777, 0.137622, 0.086014),
+        12,
         1.0,
-        0.05
+        0.0,
+        0.6,
+        Vec3(1, 1, 1)
     );
+
+    // ===== GLASS / TRANSPARENT =====
+    Material clear_glass(
+        Vec3(0.0, 0.0, 0.0),     // ka - no ambient for transparent
+        Vec3(0.1, 0.1, 0.1),     // kd - minimal diffuse
+        Vec3(0.9, 0.9, 0.9),     // ks - high specular
+        100,                      // shininess - very smooth
+        1.52,                     // ior - typical glass
+        0.95,                     // filter - highly transparent
+        0.05,                     // reflection - low direct reflection (Fresnel dominates)
+        Vec3(1.0, 1.0, 1.0)      // filter_color - clear
+    );
+
     Material red_glass(
-        Vec3(0.01),
-        Vec3(0.02),
-        Vec3(0.8),
-        64,
-        1.3,
-        1.0,
-        0.05
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(0.1, 0.0, 0.0),
+        Vec3(0.9, 0.9, 0.9),
+        100,
+        1.52,
+        0.9,
+        0.05,
+        Vec3(1.0, 0.1, 0.1)      // filter_color - red tinted
     );
+
+    Material green_glass(
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(0.0, 0.1, 0.0),
+        Vec3(0.9, 0.9, 0.9),
+        100,
+        1.52,
+        0.9,
+        0.05,
+        Vec3(0.1, 1.0, 0.1)      // filter_color - green tinted
+    );
+
+    Material amber_glass(
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(0.1, 0.07, 0.0),
+        Vec3(0.9, 0.9, 0.9),
+        100,
+        1.52,
+        0.85,
+        0.05,
+        Vec3(1.0, 0.7, 0.2)      // filter_color - amber/honey color
+    );
+
+    // ===== LIQUIDS =====
+    Material water(
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(0.05, 0.05, 0.05),
+        Vec3(0.8, 0.8, 0.8),
+        100,
+        1.33,                     // ior - water
+        0.98,                     // filter - very transparent
+        0.02,
+        Vec3(0.9, 0.95, 1.0)     // filter_color - slight blue tint
+    );
+
     Material diamond(
-        Vec3(0.01),
-        Vec3(0.05),
-        Vec3(0.9),
-        256,
-        2.42,                    // diamond IOR
-        1.0,
-        0.3                      // stronger reflection
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(0.1, 0.1, 0.1),
+        Vec3(1.0, 1.0, 1.0),
+        150,                      // very high shininess
+        2.42,                     // ior - diamond (high refraction!)
+        0.9,
+        0.1,
+        Vec3(1.0, 1.0, 1.0)
     );
-    Material air(
-        Vec3(0.0),
-        Vec3(0.0),
-        Vec3(0.0),
-        1,
-        1.0,                     // nearly equal to outside medium
+
+    // ===== DIFFUSE / MATTE =====
+    Material matte_white(
+        Vec3(0.1, 0.1, 0.1),
+        Vec3(0.8, 0.8, 0.8),
+        Vec3(0.1, 0.1, 0.1),     // low specular
+        10,                       // low shininess
         1.0,
-        0.0
+        0.0,
+        0.0,                      // no reflection
+        Vec3(1, 1, 1)
+    );
+
+    Material matte_red(
+        Vec3(0.1, 0.0, 0.0),
+        Vec3(0.8, 0.1, 0.1),
+        Vec3(0.2, 0.2, 0.2),
+        10,
+        1.0,
+        0.0,
+        0.0,
+        Vec3(1, 1, 1)
+    );
+
+    // ===== PLASTIC =====
+    Material plastic_shiny(
+        Vec3(0.05, 0.05, 0.05),
+        Vec3(0.6, 0.6, 0.8),
+        Vec3(0.7, 0.7, 0.7),
+        32,                       // medium shininess
+        1.0,
+        0.0,
+        0.3,                      // some reflection
+        Vec3(1, 1, 1)
+    );
+
+    // ===== MIRROR =====
+    Material mirror(
+        Vec3(0.1, 0.1, 0.1),
+        Vec3(0.1, 0.1, 0.1),     // very low diffuse
+        Vec3(1.0, 1.0, 1.0),
+        200,
+        1.0,
+        0.0,
+        0.95,                     // almost pure reflection
+        Vec3(1, 1, 1)
     );
 
 
     // ===== SCENE ===== 
     Scene scene = Scene();
     std::cout << "Loading scene... ";
-    scene.load_background("backgrounds/sunrise.hdr");
+    scene.load_background("backgrounds/treetop.hdr");
     scene.max_bounces = 2;
 
     scene.set_camera(std::make_shared<PerspectiveCam>(
-        Vec3(6, 6, 0),
-        Vec3(6, -1, 0.1),
+        Vec3(6, 6, 2),
+        Vec3(6, -1, -0.2),
         1.0,
         114.0
     ));
  
     // ===== LIGHTS =====
     PointLight point = PointLight(
-        Vec3(2.5, 0, 5),
+        Vec3(6, -1, 5),
         Vec3(1, 1, 1),
-        50
+        75
     );
     scene.add_light(&point);
 
     // ===== OBJECTS =====
     Sphere test = Sphere(
         1,
-        Vec3(6, -3, 0),
-        &matte
+        Vec3(6, 3, 0),
+        &chrome
     );
     scene.add_surface(&test);
     Sphere sphere_a = Sphere(
         1, 
         Vec3(0, 0, 0),
-        &blue_glass
+        &plastic_shiny
     );
     scene.add_surface(&sphere_a);
     Sphere sphere_b = Sphere(
         1, 
         Vec3(3, 0, 0),
-        &green_crystal
+        &diamond
     );
     scene.add_surface(&sphere_b);
     Sphere sphere_c = Sphere(
@@ -220,19 +270,19 @@ try {
     Sphere sphere_d = Sphere(
         1,
         Vec3(9, 0, 0),
-        &glass
+        &gold
     );
     scene.add_surface(&sphere_d);
     Sphere sphere_e = Sphere(
         1, 
         Vec3(12, 0, 0),
-        &frosted
+        &amber_glass
     );
     scene.add_surface(&sphere_e);
     Plane plane = Plane(
         Vec3(0, 0, 1),
         Vec3(0, 0, -1),
-        &water
+        &red_glass
     );
     scene.add_surface(&plane);
     std::cout << " done!" << std::endl;
@@ -240,27 +290,27 @@ try {
     // --- Render ---
     int width = 5000;
     int height = 5000;
-    // std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
-    // std::vector<Vec3> pixels;
-    // auto total_start = high_resolution_clock::now();
-    // int nframes = 240;
-    // for (int i = 0; i < nframes; i++) {
-    //     auto render_start = high_resolution_clock::now();
-    //     std::cout << "Frame: " << i << std::endl;
-    //     scene.set_camera(std::make_shared<PerspectiveCam>(
-    //         Vec3(0, 0, 0),
-    //         Vec3(cos(i * 360 / nframes * M_PI / 180), sin(i * 360 / nframes * M_PI / 180), 0),
-    //         1.0,
-    //         114
-    //     ));
-    //     pixels = scene.render(width, height);
-    //     auto render_end = high_resolution_clock::now();
-    //     auto render_timing = duration_cast<milliseconds>(render_end - render_start);
-    //     save_png(pixels, width, height, "animation/frame" + std::to_string(i) + ".png");
-    //     // std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
-    // }
-    // auto total_end = high_resolution_clock::now();
-    // std::cout << "Animated in " << duration_cast<seconds>(total_end - total_start).count() << " seconds." << std::endl;
+    std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
+    std::vector<Vec3> pixels;
+    auto total_start = high_resolution_clock::now();
+    int nframes = 240;
+    for (int i = 0; i < nframes; i++) {
+        auto render_start = high_resolution_clock::now();
+        std::cout << "Frame: " << i << std::endl;
+        scene.set_camera(std::make_shared<PerspectiveCam>(
+            Vec3(5 * cos(i * 360 / nframes * M_PI / 180), 5 * sin(i * 360 / nframes * M_PI / 180), 2),
+            Vec3(6, 0, 1.5),
+            1.0,
+            114
+        ));
+        pixels = scene.render(width, height);
+        auto render_end = high_resolution_clock::now();
+        auto render_timing = duration_cast<milliseconds>(render_end - render_start);
+        save_png(pixels, width, height, "animation/frame" + std::to_string(i) + ".png");
+        // std::cout << "Rendered " << width << "x" << height << " in " << render_timing.count() << " milliseconds" << std::endl;
+    }
+    auto total_end = high_resolution_clock::now();
+    std::cout << "Animated in " << duration_cast<seconds>(total_end - total_start).count() << " seconds." << std::endl;
 
     // --- Save ppm ---
     // auto ppm_start = high_resolution_clock::now();
@@ -271,14 +321,14 @@ try {
 
     // --- Save png
     auto png_start = high_resolution_clock::now();
-    printf("Rendering...");
-    auto pixels = scene.render(width, height);
-    std::cout << " done!" << std::endl;
-    std::cout << "Writing to .png" << std::endl;
-    save_png(pixels, width, height, "output.png");
-    auto png_end = high_resolution_clock::now();
-    auto png_timing = duration_cast<milliseconds>(png_end - png_start);
-    std::cout << "Rendered & Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
+    // std::cout << "Rendering... ";
+    // auto pixels = scene.render(width, height);
+    // std::cout << " done!" << std::endl;
+    // std::cout << "Writing to .png" << std::endl;
+    // save_png(pixels, width, height, "output.png");
+    // auto png_end = high_resolution_clock::now();
+    // auto png_timing = duration_cast<milliseconds>(png_end - png_start);
+    // std::cout << "Rendered & Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
 
 } catch (const std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;

@@ -7,7 +7,7 @@
     // // ===== MEMBERS =====
     // Vec3 ka, kd, ks; 
     // int shininess;
-    // double iot;
+    // double ior;
     // Vec3 filter;
 
 // ===== CONSTRUCTORS =====
@@ -19,8 +19,9 @@ Material::Material() {
     ior = 1.2;
     filter = 0.8;
     reflection = 0.2;
+    filter_color = Vec3(0.1, 0.2, 0.1);
 }
-Material::Material(Vec3 ka_, Vec3 kd_, Vec3 ks_, int shininess_, double ior_, double filter_, double reflection_) {
+Material::Material(Vec3 ka_, Vec3 kd_, Vec3 ks_, int shininess_, double ior_, double filter_, double reflection_, Vec3 filter_color_) {
     ka = ka_;
     kd = kd_;
     ks = ks_;
@@ -28,6 +29,7 @@ Material::Material(Vec3 ka_, Vec3 kd_, Vec3 ks_, int shininess_, double ior_, do
     ior = ior_;
     filter = filter_;
     reflection = reflection_;
+    filter_color = filter_color_;
 }
 
 // ===== METHODS =====
@@ -65,7 +67,7 @@ Vec3 Material::shade(const Scene& scene, const Ray& ray, const Intersection& hit
         Vec3 shadow_origin = x + l * EPS;
         Ray shadow_ray = Ray(shadow_origin, l);
         Intersection shadow_hit = scene.hit(shadow_ray, 0, dist - EPS);
-        bool in_shadow = shadow_hit.t < hit.t;
+        bool in_shadow = shadow_hit.t < dist - EPS;
 
         if (!in_shadow) {
             local_color = local_color + intensity * blinn_phong(n, l, v);
@@ -108,7 +110,7 @@ Vec3 Material::shade(const Scene& scene, const Ray& ray, const Intersection& hit
             refracted_direction = refracted_direction.normalized();
             Vec3 refracted_origin = x + refracted_direction * EPS;
             Ray refracted_ray(refracted_origin, refracted_direction);
-            transmission_color = scene.shade_ray(refracted_ray, bounce + 1);
+            transmission_color = Vec3(filter_color) * scene.shade_ray(refracted_ray, bounce + 1);
         }
     }
     // if (filter > 0.0) {
