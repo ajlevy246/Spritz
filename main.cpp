@@ -79,7 +79,7 @@ try {
         76,                       // shininess
         1.0,                      // ior (not used for opaque)
         0.0,                      // filter (opaque)
-        0.5,                      // reflection (highly reflective)
+        0.3,                      // reflection (highly reflective)
         Vec3(1, 1, 1)            // filter_color (not used)
     );
 
@@ -176,9 +176,9 @@ try {
     // ===== DIFFUSE / MATTE =====
     Material matte_white(
         Vec3(0.1, 0.1, 0.1),
-        Vec3(0.8, 0.8, 0.8),
+        Vec3(0.5, 0.5, 0.5),
         Vec3(0.1, 0.1, 0.1),     // low specular
-        10,                       // low shininess
+        4,                       // low shininess
         1.0,
         0.0,
         0.0,                      // no reflection
@@ -198,7 +198,7 @@ try {
 
     // ===== PLASTIC =====
     Material plastic_shiny(
-        Vec3(0.05, 0.05, 0.05),
+        Vec3(0.05, 0.05, 0.35),
         Vec3(0.6, 0.6, 0.8),
         Vec3(0.7, 0.7, 0.7),
         32,                       // medium shininess
@@ -224,72 +224,114 @@ try {
     // ===== SCENE ===== 
     Scene scene = Scene();
     std::cout << "Loading scene... ";
-    scene.load_background("backgrounds/treetop.hdr");
+    scene.load_background("backgrounds/clear_night4.hdr");
     scene.max_bounces = 2;
 
     scene.set_camera(std::make_shared<PerspectiveCam>(
         Vec3(6, 6, 2),
-        Vec3(6, -1, -0.2),
+        Vec3(6, -1, 0),
         1.0,
         114.0
     ));
  
     // ===== LIGHTS =====
-    PointLight point = PointLight(
-        Vec3(6, -1, 5),
-        Vec3(1, 1, 1),
-        75
+    PointLight point_a = PointLight(
+        Vec3(2.5, 0, 5),
+        Vec3(0, 1, 0),
+        25
     );
-    scene.add_light(&point);
+    scene.add_light(&point_a);
+    PointLight point_b = PointLight(
+        Vec3(0, 2.5, 5),
+        Vec3(0, 0, 1),
+        25
+    );
+    scene.add_light(&point_b);
+    PointLight point_c = PointLight(
+        Vec3(-1.414, -1.414, 5),
+        Vec3(1, 0, 0),
+        25
+    );
+    scene.add_light(&point_c);
 
     // ===== OBJECTS =====
-    Sphere test = Sphere(
-        1,
-        Vec3(6, 3, 0),
-        &chrome
+    Triangle test = Triangle(
+        Vec3(3, 3, 0),
+        Vec3(6, 2, 3),
+        Vec3(9, 3, 0),
+        &clear_glass
     );
-    scene.add_surface(&test);
+    // scene.add_surface(&test);
     Sphere sphere_a = Sphere(
-        1, 
-        Vec3(0, 0, 0),
-        &plastic_shiny
+        1,
+        Vec3(3, 0, 0),
+        &clear_glass
     );
     scene.add_surface(&sphere_a);
     Sphere sphere_b = Sphere(
         1, 
-        Vec3(3, 0, 0),
-        &diamond
+        Vec3(0, 3, 0),
+        &clear_glass
     );
     scene.add_surface(&sphere_b);
     Sphere sphere_c = Sphere(
         1,
-        Vec3(6, 0, 0),
-        &diamond
+        Vec3(-1.414, -1.414, 0),
+        &clear_glass
     );
     scene.add_surface(&sphere_c);
     Sphere sphere_d = Sphere(
         1,
         Vec3(9, 0, 0),
-        &gold
+        &clear_glass
     );
-    scene.add_surface(&sphere_d);
+    // scene.add_surface(&sphere_d);
     Sphere sphere_e = Sphere(
         1, 
         Vec3(12, 0, 0),
         &amber_glass
     );
-    scene.add_surface(&sphere_e);
+    // scene.add_surface(&sphere_e);
     Plane plane = Plane(
         Vec3(0, 0, 1),
         Vec3(0, 0, -1),
-        &red_glass
+        &matte_white
     );
     scene.add_surface(&plane);
+
+    Triangle tri_a = Triangle(
+        Vec3(0, 0, 0),
+        Vec3(1, 1, 1),
+        Vec3(0, 2, 0),
+        &clear_glass
+    );
+    Triangle tri_b = Triangle(
+        Vec3(0, 2, 0),
+        Vec3(1, 1, 1),
+        Vec3(2, 2, 0),
+        &clear_glass
+    );
+    Triangle tri_c = Triangle(
+        Vec3(2, 2, 0),
+        Vec3(1, 1, 1),
+        Vec3(2, 0, 0),
+        &clear_glass
+    );
+    Triangle tri_d = Triangle(
+        Vec3(2, 0, 0),
+        Vec3(1, 1, 1),
+        Vec3(0, 0, 0),
+        &clear_glass
+    );
+    // scene.add_surface(&tri_a);
+    // scene.add_surface(&tri_b);
+    // scene.add_surface(&tri_c);
+    // scene.add_surface(&tri_d);
     std::cout << " done!" << std::endl;
 
     // --- Render ---
-    int width = 5000;
-    int height = 5000;
+    int width = 2000;
+    int height = 2000;
     std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
     std::vector<Vec3> pixels;
     auto total_start = high_resolution_clock::now();
@@ -298,8 +340,8 @@ try {
         auto render_start = high_resolution_clock::now();
         std::cout << "Frame: " << i << std::endl;
         scene.set_camera(std::make_shared<PerspectiveCam>(
-            Vec3(5 * cos(i * 360 / nframes * M_PI / 180), 5 * sin(i * 360 / nframes * M_PI / 180), 2),
-            Vec3(6, 0, 1.5),
+            Vec3(6 * cos(i * 360 / nframes * M_PI / 180), 6 * sin(i * 360 / nframes * M_PI / 180), 0.5),
+            Vec3(0, 0, 0),
             1.0,
             114
         ));
@@ -321,14 +363,14 @@ try {
 
     // --- Save png
     auto png_start = high_resolution_clock::now();
-    // std::cout << "Rendering... ";
-    // auto pixels = scene.render(width, height);
-    // std::cout << " done!" << std::endl;
-    // std::cout << "Writing to .png" << std::endl;
-    // save_png(pixels, width, height, "output.png");
-    // auto png_end = high_resolution_clock::now();
-    // auto png_timing = duration_cast<milliseconds>(png_end - png_start);
-    // std::cout << "Rendered & Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
+    std::cout << "Rendering... ";
+    pixels = scene.render(width, height);
+    std::cout << " done!" << std::endl;
+    std::cout << "Writing to .png" << std::endl;
+    save_png(pixels, width, height, "output.png");
+    auto png_end = high_resolution_clock::now();
+    auto png_timing = duration_cast<milliseconds>(png_end - png_start);
+    std::cout << "Rendered & Saved .png in " << png_timing.count() << " milliseconds" << std::endl;
 
 } catch (const std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;
@@ -338,3 +380,10 @@ try {
 return 0;
 
 }
+
+// Measures of optimizations, 5000x5000 image, three balls three lights
+// OPTIMIZATION               TOTAL TIME (seconds)
+// ====================================================== 
+// PRE PARALLEL:              14.319
+// AUTO PARALLEL:             3.175
+// Vec3 Optimizations:        2.57
