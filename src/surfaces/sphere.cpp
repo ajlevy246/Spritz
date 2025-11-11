@@ -13,28 +13,25 @@ Sphere::Sphere(double radius, Vec3 center, Material* mat) {
 }
 
 // ===== METHODS =====
-Intersection Sphere::hit(Ray ray, double t0, double t1) {
+
 // An intersection of a ray with the sphere occurs at time t if:
-
 //     |(`ray_origin` + `t`*`ray_direction` - `sphere_center`)| - `sphere_radius`^2 = 0
-
 //     This is a quadratic: `Ax^2 + Bx + C`.
-    
 //     Args:
 //         ray (Ray): Ray to check
 //         t0 (float): Start of time interval
 //         t1 (float): End of time interval
-
 // Returns: intersection object, at t=inf if no hit
+Intersection Sphere::hit(Ray ray, double t0, double t1) {
     Intersection hit = Intersection();
     
     Vec3 dist = ray.o - c;
     // Solve quadratic
     double A = ray.d.length_sq();
     double B = ray.d.dot(dist);
-    double C = dist.length_sq() - pow(r, 2);
+    double C = dist.length_sq() - (r * r);
 
-    double discriminant = pow(B, 2) - A * C;
+    double discriminant = (B * B) - A * C;
     if (discriminant < 0) { //no real solutions
         return hit;
     }

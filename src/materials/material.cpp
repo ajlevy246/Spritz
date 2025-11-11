@@ -53,36 +53,90 @@ Vec3 Material::shade(const Scene& scene, const Ray& ray, const Intersection& hit
     if (bounce > MAX_BOUNCES) return Vec3(0, 0, 0);
 
     Vec3 x = ray.evaluate(hit.t);
-    Vec3 n = hit.normal.normalized();
-    Vec3 v = ray.d.normalized() * -1;
+    Vec3 n = hit.normal;
+    Vec3 v = ray.d * -1;
 
     // ----- Local Illumination -----
-    Vec3 local_color = Vec3(0, 0, 0);
-    for (const auto& light : scene.lights) {
+    Vec3 local_color = Vec3(0);
+    for (const auto& light: scene.lights) {
         Vec3 l = light->direction_from(x);
         double dist = light->distance_from(x);
         Vec3 intensity = light->intensity_at(x);
 
-        // Cast shadow ray
+        // Cast shadow ray (accumulate transparency)
         Vec3 shadow_origin = x + l * EPS;
         Ray shadow_ray = Ray(shadow_origin, l);
-        Intersection shadow_hit = scene.hit(shadow_ray, 0, dist - EPS);
-        bool in_shadow = shadow_hit.t < dist - EPS;
 
-        if (!in_shadow) {
-            local_color = local_color + intensity * blinn_phong(n, l, v);
+        // Trace through all intersections between x and the light. 
+        //  - If the intermediate objets are transparent, light gets through
+        Vec3 light_attenuation = Vec3(1);
+        double current_t = 0.0;
+        while (current_t < dist - EPS) {
+            Intersection shadow_hit = scene.hit(shadow_ray, current_t + EPS, dist - EPS);
+
+            if (shadow_hit.t >= dist - EPS) {
+                break; // no more hits, the light has finally reached x
+            }
+
+            const Material* blocking_material = shadow_hit.surface->material;
+
+            if (blocking_material && blocking_material->filter > 0.0) {
+                // Interfering object is transparent
+                Vec3 transparency = Vec3(blocking_material->filter_color) * double(blocking_material->filter);
+                light_attenuation = light_attenuation * transparency;
+
+                // Round down if the object is barely transparent
+                if (light_attenuation.length_sq() < 0.05) {
+                    light_attenuation = Vec3(0);
+                    break;
+                }
+            } else {
+                // Object is opaque, so x is in shadow
+                light_attenuation = Vec3(0);
+                break;
+            }
+
+            // iterate to the next intersection
+            current_t = shadow_hit.t;
+        }
+
+        if (light_attenuation.length_sq() > EPS) {
+            local_color = local_color + (intensity * light_attenuation) * blinn_phong(n, l , v);
         }
     }
 
     local_color = local_color + ka;
+    
+    
+    
+    
+    // // ----- Local Illumination -----
+    // Vec3 local_color = Vec3(0, 0, 0);
+    // for (const auto& light : scene.lights) {
+    //     Vec3 l = light->direction_from(x);
+    //     double dist = light->distance_from(x);
+    //     Vec3 intensity = light->intensity_at(x);
+
+    //     // Cast shadow ray
+    //     Vec3 shadow_origin = x + l * EPS;
+    //     Ray shadow_ray = Ray(shadow_origin, l);
+    //     Intersection shadow_hit = scene.hit(shadow_ray, 0, dist - EPS);
+    //     bool in_shadow = shadow_hit.t < dist - EPS;
+
+    //     if (!in_shadow) {
+    //         local_color = local_color + intensity * blinn_phong(n, l, v);
+    //     }
+    // }
+
+    // local_color = local_color + ka;
 
     // ----- Reflection / Refraction -----
-    Vec3 reflect_direction = (Vec3(ray.d) - n * 2 * ray.d.dot(n)).normalized();
+    Vec3 reflect_direction = (ray.d - n * 2 * ray.d.dot(n)).normalized();
     Vec3 reflect_origin = x + reflect_direction * EPS;
     Ray reflection_ray = Ray(reflect_origin, reflect_direction);
     Vec3 reflection_color = scene.shade_ray(reflection_ray, bounce + 1);
 
-    Vec3 transmission_color = Vec3(0, 0, 0);
+    Vec3 transmission_color = Vec3(0);
     if (filter > 0.0) {
         // Determine if the ray is entering or exiting
         Vec3 nn = n;
@@ -106,24 +160,13 @@ Vec3 Material::shade(const Scene& scene, const Ray& ray, const Intersection& hit
             // Total internal reflection — no transmitted ray
             // (You could optionally add this energy to reflection)
         } else {
-            Vec3 refracted_direction = Vec3(ray.d) * eta + nn * (eta * cos_theta_i - sqrt(k));
+            Vec3 refracted_direction = ray.d * eta + nn * (eta * cos_theta_i - sqrt(k));
             refracted_direction = refracted_direction.normalized();
             Vec3 refracted_origin = x + refracted_direction * EPS;
             Ray refracted_ray(refracted_origin, refracted_direction);
-            transmission_color = Vec3(filter_color) * scene.shade_ray(refracted_ray, bounce + 1);
+            transmission_color = filter_color * scene.shade_ray(refracted_ray, bounce + 1);
         }
     }
-    // if (filter > 0.0) {
-    //     double eta = 1 / ior;
-    //     double cos_i = std::clamp(ray.d.dot(n), -1.0, 1.0);
-    //     double k = 1.0 - eta * eta * (1.0 - cos_i * cos_i);
-    //     if (k >= 0.0) { // if not total internal reflection
-    //         Vec3 refracted_direction = Vec3(ray.d) * eta + n * (eta * cos_i - sqrt(k)); // direction of refracted ray
-    //         Vec3 refracted_origin = x + refracted_direction * EPS;
-    //         Ray refracted_ray = Ray(refracted_origin, refracted_direction);
-    //         transmission_color = scene.shade_ray(refracted_ray, bounce + 1);
-    //     }
-    // }
 
     // ----- Fresnel -----
     double fresnel = shlick_approx(n, v);

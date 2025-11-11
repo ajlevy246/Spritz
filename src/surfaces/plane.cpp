@@ -4,7 +4,7 @@
 
 // ===== CONSTRUCTORS =====
 Plane::Plane(Vec3 plane_normal, Vec3 plane_point, Material* mat) {
-    n = plane_normal;
+    n = plane_normal.normalized();
     p = plane_point;
     material = mat;
 }

@@ -8,7 +8,6 @@ OrthographicCam::OrthographicCam() {
     
     eye = Vec3(1, 1, 1);
     Vec3 look_at = Vec3(-1, -1, -1);
-    Vec3 up = Vec3(0, 0, 1);
     w = eye - look_at;
     u = up.cross(w).normalized();
     v = w.cross(u).normalized();

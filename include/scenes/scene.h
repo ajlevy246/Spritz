@@ -8,7 +8,7 @@
 #include "raytracing.h"
 #include "surfaces.h"
 
-const int MAX_BOUNCES = 2;
+const int MAX_BOUNCES = 3;
 
 class Scene {
 public:

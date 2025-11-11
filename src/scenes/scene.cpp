@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
+#include <thread>
+#include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // for loading background images
@@ -79,7 +81,7 @@ Vec3 Scene::project_background(const Ray& ray) const {
         background_data[index + 1],
         background_data[index + 2]
     );
-    loaded = loaded / (Vec3(1, 1, 1) + loaded);
+    loaded = loaded / (Vec3(1) + loaded);
     loaded.x = pow(loaded.x, 1.0 / 2.2);
     loaded.y = pow(loaded.y, 1.0 / 2.2);
     loaded.z = pow(loaded.z, 1.0 / 2.2);
@@ -108,42 +110,63 @@ Vec3 Scene::shade_ray(const Ray& ray, int bounce) const {
     }
 
     // Calculate illumination at the point of intersection
-    Vec3 shade = Vec3(0, 0, 0);
+    Vec3 shade = Vec3(0);
     shade = hit_obj.surface->material->shade(*this, ray, hit_obj, bounce);
     return shade;
-    // for (Light* light : lights) {
-    //     Vec3 light_contribution = light->illuminate(this, ray, &hit_obj);
-    //     shade = shade + light_contribution;
-    // }
-    // // Calculate illumination from reflections
-    // if (bounce < max_bounces) {
-    //     Vec3 reflection_origin = ray->evaluate(hit_obj.t) + hit_obj.normal * EPS; 
-    //     Vec3 reflection_direction = ray->d - hit_obj.normal * 2 * ray->d.dot(hit_obj.normal);
-    //     Ray reflection = Ray(reflection_origin, reflection_direction);
-    //     Vec3 ks = hit_obj.surface->material.ks;
-    //     shade = shade + ks * shade_ray(&reflection, bounce + 1); // recurse
-    // }
     
 }
 
-// Main rendering logic. Returns a 1d array of pixel values
+
+// // Manual parallel rendering logic. Returns a 1d array of pixel values
 std::vector<Vec3> Scene::render(int width, int height) const {
-    std::vector pixels(width * height, Vec3(0, 0, 0)); // Initialize image to black
-
-    // Iterate over pixels
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int idx = y * width + x;
-
-            // Generate ray throuh pixel
-            Ray ray = cam->generate_ray(x, y, width, height); 
-
-            // Trace ray
-            Vec3 color = shade_ray(ray, 0);
-            // Add to pixel buffer
-            pixels[idx] = color;
+    std::vector<Vec3> pixels(width * height, Vec3(0, 0, 0));
+    
+    unsigned int num_threads = std::thread::hardware_concurrency();
+    std::vector<std::thread> threads;
+    
+    auto render_rows = [&](int start_y, int end_y) {
+        for (int y = start_y; y < end_y; ++y) {
+            for (int x = 0; x < width; ++x) {
+                int idx = y * width + x;
+                Ray ray = cam->generate_ray(x, y, width, height);
+                pixels[idx] = shade_ray(ray, 0);
+            }
         }
+    };
+    
+    int rows_per_thread = height / num_threads;
+    for (unsigned int i = 0; i < num_threads; ++i) {
+        int start_y = i * rows_per_thread;
+        int end_y = (i == num_threads - 1) ? height : (i + 1) * rows_per_thread;
+        threads.emplace_back(render_rows, start_y, end_y);
     }
-
+    
+    for (auto& t : threads) {
+        t.join();
+    }
+    
     return pixels;
 }
+
+
+// // Main rendering logic. Returns a 1d array of pixel values
+// std::vector<Vec3> Scene::render(int width, int height) const {
+//     std::vector pixels(width * height, Vec3(0, 0, 0)); // Initialize image to black
+
+//     // Iterate over pixels
+//     for (int y = 0; y < height; ++y) {
+//         for (int x = 0; x < width; ++x) {
+//             int idx = y * width + x;
+
+//             // Generate ray throuh pixel
+//             Ray ray = cam->generate_ray(x, y, width, height); 
+
+//             // Trace ray
+//             Vec3 color = shade_ray(ray, 0);
+//             // Add to pixel buffer
+//             pixels[idx] = color;
+//         }
+//     }
+
+//     return pixels;
+// }
