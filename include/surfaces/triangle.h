@@ -8,7 +8,6 @@ public:
     Vec3 v1, v2, v3, edge1, edge2, normal;
 
     // ===== CONSTRUCTORS =====
-    Triangle();
     Triangle(Vec3 vert1, Vec3 vert2, Vec3 vert3, Material* mat);
 
     // ===== METHODS =====

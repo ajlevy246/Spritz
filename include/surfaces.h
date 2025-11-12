@@ -7,3 +7,4 @@ constexpr double EPS = 1e-9;
 #include "surfaces/sphere.h"
 #include "surfaces/triangle.h"
 #include "surfaces/plane.h"
+#include "surfaces/cuboid.h"
