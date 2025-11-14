@@ -17,7 +17,6 @@ public:
     std::vector<Surface*> objects;
     std::vector<Light*> lights;
     float* background_data; // loaded from .hdr file
-    int max_bounces;
     
     // ===== CONSTRUCTORS =====
     Scene();
