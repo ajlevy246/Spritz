@@ -15,7 +15,6 @@
 
 using namespace std::chrono;
 
-
 // Save function from your snippet
 void save_ppm(const std::vector<Vec3>& pixels, int width, int height, const std::string& filename) {
 std::ofstream out(filename, std::ios::out | std::ios::binary);
@@ -145,7 +144,7 @@ try {
 
     // --- Scene ---
     Scene scene = Scene(
-        std::make_shared<PerspectiveCam>(Vec3(3, 3, 10),Vec3(0.1, 0.1, 0.1),1.0,114)
+        std::make_shared<PerspectiveCam>(Vec3(3, 3, 8),Vec3(0.1, 0.1, 0.1),1.0,114)
     );
     scene.load_background("backgrounds/treetop.hdr");
 
@@ -181,7 +180,7 @@ try {
     scene.add_surface(&prism_b);
 
     PointLight sun = PointLight(
-        Vec3(-4, -4, 10),
+        Vec3(4, 4, 6),
         Vec3(1),
         75
     );
@@ -198,15 +197,15 @@ try {
     std::cout << "Rendering " << width << "x" << height << "..." << std::endl;
     std::vector<Vec3> pixels;
     auto total_start = high_resolution_clock::now();
-    int nframes = 240;
+    int nframes = 1;
     for (int i = 0; i < nframes; i++) {
         auto render_start = high_resolution_clock::now();
         std::cout << "Frame: " << i << std::endl;
-        sun.position = Vec3(
-            5 * cos(i * 360.0 / nframes * M_PI / 180.0),
-            5 * sin(i * 360.0 / nframes * M_PI / 180.0),
-            5
-        );
+        // sun.position = Vec3(
+        //     5 * cos(i * 360.0 / nframes * M_PI / 180.0),
+        //     5 * sin(i * 360.0 / nframes * M_PI / 180.0),
+        //     5
+        // );
         pixels = scene.render(width, height);
         auto render_end = high_resolution_clock::now();
         auto render_timing = duration_cast<milliseconds>(render_end - render_start);
