@@ -16,9 +16,6 @@ Spritz++ is a port of my Python toy raytracer to C++. It's capable of simulating
 <video src="./progress/night.mp4" width=500 alt="Camera rotates around five spheres of varying materials on a starry background.">
 </div>
 
-    
-![Tray Icon](https://github.com/ajlevy246/Spritz/raw/main/progress/tray.png)
-
 
 ## How's it work? 
 
@@ -129,6 +126,7 @@ Now that we know what object the ray hit, the color at the point of intersection
 [^2]: Reference: https://pbr-book.org/
 
 [^3]: Reference: https://graphicscompendium.com/raytracing/
+
 
 
 
