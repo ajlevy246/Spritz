@@ -1,8 +1,8 @@
 
 
-# Spritz++[^1][^2][^3]
+# Spritz++
+Spritz++ is a port of my Python toy raytracer to C++. It's capable of simulating refractive materials using the Fresnel Equations, projecting background HDRi's, and complex lighting in scenes. The goal of this project is to learn more about C++ and parallelization in graphics, and eventually to turn this into a fully differentiable raytracing engine.[^1][^2][^3]
 
-Spritz++ is a port of my Python toy raytracer to C++. It's capable of simulating refractive materials using the Fresnel Equations, projecting background HDRi's, and complex lighting in scenes. The goal of this project is to learn more about C++ and parallelization in graphics, and eventually to turn this into a fully differentiable raytracing engine. 
 
 ## Some TODOs:
 1. **Bounding Volume Hierarchies:** This is a simple optimization that reduces the number of ray-object intersections by potentially orders of magnitude by testing rays against a spatial tree first, rather than the entire scene.
@@ -15,6 +15,7 @@ Spritz++ is a port of my Python toy raytracer to C++. It's capable of simulating
 <img src="./progress/tray.png" width=500 alt="Sitting on a matte plane are dimly lit spheres and glass prisms.">
 <video src="./progress/night.mp4" width=500 alt="Camera rotates around five spheres of varying materials on a starry background.">
 </div>
+![Sitting on a matte plane are dimly lit spheres and glass prisms.]("./progress/tray.png")
 
 
 ## How's it work? 
