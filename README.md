@@ -123,7 +123,6 @@ Now that we know what object the ray hit, the color at the point of intersection
 
 [^1]: Reference: Fundamentals of Computer Graphics; 5th Edition
 [^2]: Reference: https://pbr-book.org/
-
 [^3]: Reference: https://graphicscompendium.com/raytracing/
 
 
