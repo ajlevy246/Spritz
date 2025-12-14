@@ -30,7 +30,7 @@ public:
         return (position - point).length();
     }
 
-    Vec3 intensity_at(const Vec3& point) {
+    Vec3 intensity_at(const Vec3& point) { // inverse square law
         double r2 = (position - point).length_sq();
         return color * (intensity / r2);
     }

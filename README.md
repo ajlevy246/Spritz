@@ -52,7 +52,7 @@ for each pixel on screen: #Trace a ray for each pixel in the image to be rendere
 Every scene starts with a `Camera` object, that is used to calculate the angle of the ray through each pixel. This ray is calculated using only the coordinates of the pixel on the virtual screen, the **aspect ratio** and **fov** of the screen, and the orientation of the camera, characterized by its three basis vectors **u** (up), **v** (right), and **w** (backwards, i.e. towards the viewer). The calculation of the rays allows for perspective viewing. If all the rays were parallel to the viewing screen, the resulting image would be in *orthographic* perspective.
 
 <div style="display:flex;justify-content:center">
-<pre><code class="language-python">
+<pre><code>
     <span style="color: darkorange">u -</span> <span style="color: gray">|</span>
         <span style="color: gray">|</span>                                             <span style="color: yellow;">  O</span>
      <span style="color: green">___<span style="color: gray">|</span>___             |\</span>
@@ -76,7 +76,7 @@ Every scene starts with a `Camera` object, that is used to calculate the angle o
 Next, the scene must calculate the color of the ray that is sent out. It loops through every `Surface` in the scene to find the first object hit. Every `Surface` object (e.g, `Sphere`, `Triangle`, `Plane`) must come equipped with a method to calculate whether a given ray intersects with itself. If an intersection is found, it returns **t**, the time that the ray hit it, **n**, the normal vector to the surface at the point of intersection, and a reference to itself.
 
 <div style="display:flex;justify-content:center">
-<pre><code class="language-python">
+<pre><code>
 <span style="color: green">            **     <span style="color: darkorange">Point of intersection</span>
           *    *  <span style="color: darkorange">/</span>
         *        </span><span style="color: violet">X</span><span style="color: gray">---------></span><span style="color: green">
@@ -100,7 +100,7 @@ Next, the scene must calculate the color of the ray that is sent out. It loops t
 Now that we know what object the ray hit, the color at the point of intersection is computed. For each light in the scene, a ray is beamed towards the point of intersection. If another object is in the way of a given light, then the point is in shadow, and that light makes no contribution. Otherwise, the illumination is computed based on the `Material` of the surface and the type of `Light`. Reflections are computed simply as a recursive call to the shade routine, with the reflected ray as the new beam. 
 
 <div style="display:flex;justify-content:center">
-<pre><code class="language-python">
+<pre><code>
                                       <span style="color: green;">X</span> <span style="color: darkorange;">- camera eye</span>
                                      / 
                 <span style="color: yellow;">  O</span>          <span style="color: green;">_______</span>/<span style="color: green;">_</span>

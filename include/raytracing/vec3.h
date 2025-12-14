@@ -77,6 +77,10 @@ public:
         }
         return Vec3(0.0, 0.0, 0.0);
     }
+
+    inline Vec3 sqrt() const {
+        return Vec3(pow(x, 0.5), pow(y, 0.5), pow(z, 0.5));
+    }
 };
 
 // Also add this for convenience: scalar * vector

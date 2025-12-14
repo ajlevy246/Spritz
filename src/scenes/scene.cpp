@@ -50,7 +50,6 @@ void Scene::set_camera(std::shared_ptr<Camera> new_camera) {
 
 Vec3 Scene::project_background(const Ray& ray) const {
     if (!background_data) {
-        printf("not here!\n");
         return Vec3(0.0, 0.0, 0.0); // default black
     }
 

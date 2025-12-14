@@ -180,3 +180,186 @@ Vec3 Material::shade(const Scene& scene, const Ray& ray, const Intersection& hit
 
     return total;
 }
+
+// Sample materials
+
+
+Material water(
+    Vec3(0.0, 0.0, 0.0),
+    Vec3(0.05, 0.05, 0.05),
+    Vec3(1.0, 1.0, 1.0),
+    80,
+    1.33,                      // ior: water
+    0.95,
+    0.05,
+    Vec3(0.8, 0.9, 1.0)       // filter_color: slight blue tint
+);
+
+Material ruby(
+    Vec3(0.05, 0.0, 0.0),
+    Vec3(0.1, 0.0, 0.0),
+    Vec3(1.0, 1.0, 1.0),
+    120,
+    1.76,                      // ior: ruby/corundum
+    0.85,
+    0.15,
+    Vec3(0.9, 0.1, 0.2)       // filter_color: deep red
+);
+
+Material emerald(
+    Vec3(0.0, 0.05, 0.0),
+    Vec3(0.0, 0.1, 0.0),
+    Vec3(1.0, 1.0, 1.0),
+    100,
+    1.57,                      // ior: emerald/beryl
+    0.8,
+    0.2,
+    Vec3(0.1, 0.9, 0.3)       // filter_color: green
+);
+
+Material gold(
+    Vec3(0.24, 0.19, 0.07),
+    Vec3(0.75, 0.61, 0.23),
+    Vec3(0.63, 0.56, 0.37),
+    50,
+    0.47,                      // ior: gold (metallic)
+    0.0,                       // filter: opaque
+    0.9,                       // reflection: highly reflective
+    Vec3(1.0, 1.0, 1.0)
+);
+Material copper(
+    Vec3(0.19, 0.07, 0.02),
+    Vec3(0.7, 0.27, 0.08),
+    Vec3(0.26, 0.14, 0.09),
+    40,
+    1.1,
+    0.0,
+    0.85,
+    Vec3(1.0, 1.0, 1.0)
+);
+
+Material diamond(
+    Vec3(0.0, 0.0, 0.0),
+    Vec3(0.05, 0.05, 0.05),
+    Vec3(1.0, 1.0, 1.0),
+    200,                       // shininess: extremely shiny
+    2.42,                      // ior: diamond (high refraction!)
+    0.95,
+    0.05,
+    Vec3(1.0, 1.0, 1.0)
+);
+
+Material soap_bubble(
+    Vec3(0.0, 0.0, 0.0),
+    Vec3(0.0, 0.0, 0.0),
+    Vec3(1.0, 1.0, 1.0),
+    150,
+    1.33,
+    0.99,                      // filter: nearly transparent
+    0.01,                      // reflection: thin film
+    Vec3(1.0, 1.0, 1.0)
+);
+
+Material neon_blue(
+    Vec3(0.3, 0.5, 1.0),      // ka: bright ambient = "glow"
+    Vec3(0.2, 0.4, 0.8),
+    Vec3(0.5, 0.7, 1.0),
+    20,
+    1.0,
+    0.0,
+    0.1,
+    Vec3(1.0, 1.0, 1.0)
+);
+
+Material lava(
+    Vec3(1.0, 0.3, 0.0),      // ka: orange glow
+    Vec3(0.8, 0.1, 0.0),
+    Vec3(1.0, 0.5, 0.2),
+    10,
+    1.0,
+    0.0,
+    0.0,
+    Vec3(1.0, 1.0, 1.0)
+);
+
+Material frosted_glass(
+    Vec3(0.05, 0.05, 0.05),
+    Vec3(0.3, 0.3, 0.3),      // kd: more diffuse = frosted look
+    Vec3(0.5, 0.5, 0.5),
+    30,                        // shininess: lower = more matte
+    1.52,
+    0.7,                       // filter: semi-transparent
+    0.3,
+    Vec3(1.0, 1.0, 1.0)
+);
+
+Material jade(
+    Vec3(0.1, 0.18, 0.17),
+    Vec3(0.4, 0.7, 0.6),
+    Vec3(0.3, 0.5, 0.4),
+    25,
+    1.6,
+    0.5,                       // filter: translucent
+    0.5,
+    Vec3(0.5, 0.9, 0.7)
+);
+Material chrome(
+    Vec3(0.25, 0.25, 0.25),
+    Vec3(0.4, 0.4, 0.4),
+    Vec3(0.77, 0.77, 0.77),
+    90,
+    2.5,
+    0.0,
+    0.95,
+    Vec3(1.0, 1.0, 1.0)
+);
+Material matte_clay(
+    Vec3(0.2, 0.15, 0.1),
+    Vec3(0.7, 0.5, 0.3),
+    Vec3(0.05, 0.05, 0.05),
+    2,
+    1.0,
+    0.0,
+    0.0,
+    Vec3(1.0, 1.0, 1.0)
+);
+    Material green_glass(
+    Vec3(0.0, 0.0, 0.0),
+    Vec3(0.0, 0.1, 0.0),
+    Vec3(0.9, 0.9, 0.9),
+    100,
+    1.52,
+    0.9,
+    0.05,
+    Vec3(0.1, 1.0, 0.1)
+);
+Material amber_glass(
+    Vec3(0.0, 0.0, 0.0),
+    Vec3(0.1, 0.07, 0.0),
+    Vec3(0.9, 0.9, 0.9),
+    100,
+    1.52,
+    0.85,
+    0.05,
+    Vec3(1.0, 0.7, 0.2)
+);
+Material glass(
+    Vec3(0.0, 0.0, 0.0),      // ka: no ambient
+    Vec3(0.1, 0.1, 0.1),      // kd: minimal diffuse
+    Vec3(1.0, 1.0, 1.0),      // ks: full specular
+    100,                      // shininess: very shiny
+    1.52,                     // ior: glass
+    0.90,                     // filter: mostly transparent
+    0.1,                      // reflection: some surface reflection
+    Vec3(1.0, 1.0, 1.0)       // filter_color: clear
+);
+Material red_plastic(
+    Vec3(0.1, 0.0, 0.0),
+    Vec3(0.7, 0.1, 0.1),
+    Vec3(0.25, 0.25, 0.25),
+    32,
+    1.46,
+    0.0,
+    0.05,
+    Vec3(1.0, 1.0, 1.0)
+);

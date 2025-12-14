@@ -22,7 +22,7 @@ Triangle::Triangle(Vec3 vert1, Vec3 vert2, Vec3 vert3, Material* mat) {
 // This is a linear system solvable with Cramer's rule.
 Intersection Triangle::hit(Ray ray, double t0, double t1) {
     
-    Intersection hit;
+    Intersection hit; // empty hit record denotes a miss
 
     const double EPS = 1e-8;
     Vec3 pvec = ray.d.cross(edge2);

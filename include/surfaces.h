@@ -8,3 +8,4 @@ constexpr double EPS = 1e-9;
 #include "surfaces/triangle.h"
 #include "surfaces/plane.h"
 #include "surfaces/cuboid.h"
+#include "surfaces/mesh.h"
