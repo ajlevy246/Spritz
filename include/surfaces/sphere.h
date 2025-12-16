@@ -14,5 +14,5 @@ public:
     Sphere(double radius, Vec3 center, Material* mat);
 
     // ===== METHODS =====
-    struct Intersection hit(Ray ray, double t0, double t1);
+    struct Intersection hit(const Ray& ray, double t0, double t1) override;
 };

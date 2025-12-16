@@ -22,7 +22,7 @@ Sphere::Sphere(double radius, Vec3 center, Material* mat) {
 //         t0 (float): Start of time interval
 //         t1 (float): End of time interval
 // Returns: intersection object, at t=inf if no hit
-Intersection Sphere::hit(Ray ray, double t0, double t1) {
+Intersection Sphere::hit(const Ray& ray, double t0, double t1) {
     Intersection hit = Intersection();
     
     Vec3 dist = ray.o - c;

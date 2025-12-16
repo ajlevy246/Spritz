@@ -20,7 +20,7 @@ Triangle::Triangle(Vec3 vert1, Vec3 vert2, Vec3 vert3, Material* mat) {
 // An intersection of a ray with the triangle occurs at time t if:
 // `ray_origin` + `t`*`ray_direction` = `v1` + `\beta(v2 - v1)` + `gamma(v3 - 1)`
 // This is a linear system solvable with Cramer's rule.
-Intersection Triangle::hit(Ray ray, double t0, double t1) {
+Intersection Triangle::hit(const Ray& ray, double t0, double t1) {
     
     Intersection hit; // empty hit record denotes a miss
 

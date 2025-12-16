@@ -11,7 +11,7 @@ Cuboid::Cuboid(Vec3 min_, Vec3 max_ , Material* mat) {
 }
 
 // ===== METHODS =====
-Intersection Cuboid::hit(Ray ray, double t0_, double t1_) {
+Intersection Cuboid::hit(const Ray& ray, double t0_, double t1_) {
     Intersection hit = Intersection();
 
     double tmin = -INFINITY, tmax = INFINITY;

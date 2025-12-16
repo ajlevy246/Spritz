@@ -313,6 +313,16 @@ Material chrome(
     0.95,
     Vec3(1.0, 1.0, 1.0)
 );
+Material dulled_chrome(
+    Vec3(0.25),
+    Vec3(0.3),
+    Vec3(0.77),
+    45,
+    2.5,
+    0.0,
+    0.75,
+    Vec3(0.8)
+);
 Material matte_clay(
     Vec3(0.2, 0.15, 0.1),
     Vec3(0.7, 0.5, 0.3),

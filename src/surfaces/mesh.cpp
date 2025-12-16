@@ -45,6 +45,11 @@ TriangularMesh::TriangularMesh(const std::string& filename, Material* mat) {
     std::vector<Vec3> temp_normals;
 
     std::string line;
+
+    // Bounding box vec
+    Vec3 minv = Vec3(MAXFLOAT);
+    Vec3 maxv = Vec3(-MAXFLOAT);
+
     while (std::getline(file, line)) {
         std::istringstream iss(line);
         std::string tag;
@@ -53,6 +58,13 @@ TriangularMesh::TriangularMesh(const std::string& filename, Material* mat) {
         if (tag == "v") {
             Vec3 v;
             iss >> v.x >> v.y >> v.z;
+            // bounding box check
+            if (v.x < minv.x) minv.x = v.x;
+            if (v.y < minv.y) minv.y = v.y;
+            if (v.z < minv.z) minv.z = v.z;
+            if (v.x > maxv.x) maxv.x = v.x;
+            if (v.y > maxv.y) maxv.y = v.y;
+            if (v.z > maxv.z) maxv.z = v.z;
             temp_vertices.push_back(v);
         }
         else if (tag == "vn") {
@@ -89,16 +101,20 @@ TriangularMesh::TriangularMesh(const std::string& filename, Material* mat) {
             std::cout << "Unrecognized tag: " << tag << std::endl;
         }
     }
-    std::cout << "Loaded material successfully" << std::endl;
+    std::cout << "Setting bb..." << std::endl;
+    bounding_box.minv = minv;
+    bounding_box.maxv = maxv;
     vertices = std::move(temp_vertices);
+    std::cout << "Loaded material successfully" << std::endl;
 }
 
 
 // ray-mesh intersection
-struct Intersection TriangularMesh::hit(Ray ray, double t0, double t1) {
+struct Intersection TriangularMesh::hit(const Ray& ray, double t0, double t1) {
     Intersection hit; // empty hit record denotes a miss
     double t_min = t1;
     double t;
+    if (!bounding_box.intersect(ray, t0, t1)) return hit;
     for (const TriangularFace& face : faces) {
         Vec3& v1 = vertices[face.idx0];
         Vec3& v2 = vertices[face.idx1];

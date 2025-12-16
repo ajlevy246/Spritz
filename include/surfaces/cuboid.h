@@ -14,5 +14,5 @@ public:
     Cuboid(Vec3 min_, Vec3 max_, Material* mat);
 
     // ===== METHODS =====
-    struct Intersection hit(Ray ray, double t0, double t1);
+    struct Intersection hit(const Ray& ray, double t0, double t1) override;
 };

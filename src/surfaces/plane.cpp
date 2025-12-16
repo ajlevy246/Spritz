@@ -10,7 +10,7 @@ Plane::Plane(Vec3 plane_normal, Vec3 plane_point, Material* mat) {
 }
 
 // ===== METHODS =====
-Intersection Plane::hit(Ray ray, double t0, double t1) {
+Intersection Plane::hit(const Ray& ray, double t0, double t1) {
     // An intersection of a ray and a plane occurs at time t when:
     
     // `n * (ray_origin + t*ray_direction - x) = 0`, where x is a point on the plane

@@ -15,6 +15,7 @@ extern Material neon_blue;
 extern Material jade;
 extern Material frosted_glass;
 extern Material lava;
+extern Material dulled_chrome;
 extern Material chrome;
 extern Material matte_clay;
 extern Material amber_glass;

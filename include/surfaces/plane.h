@@ -12,5 +12,5 @@ public:
     Plane(Vec3 plane_normal, Vec3 plane_point, Material* mat);
 
     // ===== METHODS =====
-    struct Intersection hit(Ray ray, double t0, double t1);
+    struct Intersection hit(const Ray& ray, double t0, double t1) override;
 };

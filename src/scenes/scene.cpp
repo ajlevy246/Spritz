@@ -7,7 +7,7 @@
 #include <thread>
 #include <vector>
 
-#define STB_IMAGE_IMPLEMENTATION
+// #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // for loading background images
 
 // ===== MEMBERS =====
@@ -49,7 +49,7 @@ void Scene::set_camera(std::shared_ptr<Camera> new_camera) {
 }
 
 Vec3 Scene::project_background(const Ray& ray) const {
-    if (!background_data) {
+    if (!background_data || bg_width <= 0 || bg_height <= 0) {
         return Vec3(0.0, 0.0, 0.0); // default black
     }
 

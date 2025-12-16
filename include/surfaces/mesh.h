@@ -15,6 +15,7 @@ public:
     // ===== MEMBERS =====
     std::vector<Vec3> vertices; // One Vec3 for each vertex
     std::vector<TriangularFace> faces; // On TriangularFace for each face
+    AABB bounding_box;
 
     // ===== CONSTRUCTORS =====
     
@@ -69,5 +70,5 @@ public:
     }
         
         // ray-mesh intersection
-        struct Intersection hit(Ray ray, double t0, double t1) override;
+        struct Intersection hit(const Ray& ray, double t0, double t1) override;
     };
