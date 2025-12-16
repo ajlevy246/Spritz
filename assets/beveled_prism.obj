@@ -1,0 +1,39 @@
+# Triangular prism with beveled front
+# Fully triangulated, consistent winding
+
+# back triangle (z = -1)
+v -1  0 -1
+v  1  0 -1
+v  0  1 -1
+
+# front triangle (z = 1)
+v -0.8  0  1
+v  0.8  0  1
+v  0    0.8 1
+
+# bevel ring (z = 0.4)
+v -0.6  0  0.4
+v  0.6  0  0.4
+v  0    0.6 0.4
+
+# back face
+f 1 2 3
+
+# back sides
+f 1 4 2
+f 2 4 5
+f 2 5 3
+f 3 5 6
+f 3 6 1
+f 1 6 4
+
+# bevel sides
+f 4 7 5
+f 5 7 8
+f 5 8 6
+f 6 8 9
+f 6 9 4
+f 4 9 7
+
+# front face
+f 7 9 8
