@@ -49,6 +49,7 @@ Then, we perturb the parameters of the light in the scene, and set these new par
 
 Finally, we apply ADAM:
 
+[![Well Posed Example - Progress Video]](./Ill_Posed_Example/progress.mp4)
 <video controls><source src="./Well_Posed_Example/progress.mp4" type="video/mp4"></video>
 
 ### 1. Material Parameters with Simple Render - `Ill_Posed_Example/`
