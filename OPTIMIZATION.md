@@ -108,7 +108,8 @@ This example is an attempt at a much more complex problem, where we attempt to r
 
  #### Optimization Results:
 
- 
+ <img width="250" height="248" alt="final_snowden" src="https://github.com/user-attachments/assets/7de8efdd-b9f0-4657-a81b-2fd177af7e7e" />
+
 
 ## Running The Project
 
