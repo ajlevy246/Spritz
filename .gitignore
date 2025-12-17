@@ -9,3 +9,5 @@ animation/
 backgrounds/
 
 logs/
+
+*.hdr

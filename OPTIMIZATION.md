@@ -65,6 +65,15 @@ Let's see what happens. First we set some initial conditions by pertubing the pa
 
 ![Ill Posed Example - Initial Conditions](./Ill_Posed_Example/initial_guess.png)
 
-Finally, we apply ADAM. As expected, the final result has an ambient coefficient that is a bit higher than the ground truth material, but it actually recovered the specular highlight pretty well. 
+Finally, we apply ADAM. As expected, the final result has an ambient coefficient that is a bit higher than the ground truth material, but it actually recovered the specular highlight pretty well and overall performs better than expected with very little hyperparameter tuning.
 
 <video controls><source src="./Ill_Posed_Example/progress.mp4" type="video/mp4"></video>
+
+### 3. Inverse Problem With Triangulzarized Mesh - `Inverse_Problem_Example`
+This example is an attempt at a much more complex problem, where we've moved on from rendered 'ground truth' images and instead attempt to recover some parameters from an image I screen grabbed off the web:
+
+![Inverse Problem - Ground Truth](./Inverse_Problem_Example/snowden_gt.png)
+
+In this problem, we try to recover material and lighting parameters of the scene in which the screenshot was rendered. We start by loading the mesh into a scene:
+
+![Inverse Problem - Initial Conditions](./Inverse_Problem_Example/initial_guess.png)
