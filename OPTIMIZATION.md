@@ -61,10 +61,10 @@ In this case, the problem is to recover the material properties of the reflectiv
 - For one, the loss function takes into account the entire image, while the subset of the image actually affected by changes in the material parameters is just a relatively small fraction. 
 - Secondly, since the L2 loss is not very sensitive to outliers, we're likely to lose the specular highlights and instead just see the ambient coefficent increase (which causes the entire sphere to get brighter). 
 
-Let's see what happens. First we set some initial conditions by pertubing the parameters:
+Let's see what happens. First we set some initial conditions by pertubing the parameters (look carefully at the reflective sphere):
 
 ![Ill Posed Example - Initial Conditions](./Ill_Posed_Example/initial_guess.png)
 
-Finally, we apply ADAM:
+Finally, we apply ADAM. As expected, the final result has an ambient coefficient that is a bit higher than the ground truth material, but it actually recovered the specular highlight pretty well. 
 
 <video controls><source src="./Ill_Posed_Example/progress.mp4" type="video/mp4"></video>
