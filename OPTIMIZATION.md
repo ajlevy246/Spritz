@@ -82,3 +82,9 @@ In this problem, we try to recover material and lighting parameters of the scene
 
 <img width="250" height="250" alt="Inverse Problem - Initial Guess" src="https://github.com/user-attachments/assets/01814112-4eee-49e2-be5c-0d875a1da7a6" />
 
+## Running The Project
+
+### 1. Download the Project Files:
+
+Clone this repository or download as a zip file using 'code' button on this github site. The background images used in these examples are stored as .hdr files on github's LFS (large file storage) system. Navigate to the extracted project folder and run the following commands to download these files.
+
