@@ -31,11 +31,11 @@ double photo_loss(const std::vector<Vec3> &im1, const std::vector<Vec3> &im2) {
 
 
 ```cpp
-sun.position.x += pertubation;
+sun.position.x += perturbation;
         high_loss = photo_loss(ground_truth, scene.render(WIDTH, HEIGHT));
-        sun.position.x -= pertubation2;
+        sun.position.x -= perturbation2;
         low_loss = photo_loss(ground_truth, scene.render(WIDTH, HEIGHT));
-        grad.x = (high_loss - low_loss) / pertubation2;
+        grad.x = (high_loss - low_loss) / perturbation2;
 ```
 
 3. **Algorithm**: I used the ADAM optimization algorithm for these examples for it's adaptive learning rates and momentum for faster convergence and to smooth over small minima. 
@@ -67,7 +67,7 @@ https://github.com/user-attachments/assets/af463a68-80ee-48ed-9838-66c4e520447d
 >> We see that the algorithm successfully recovers the original light parameters on this well-posed problem.
 
 ### 2. Material Parameters Recovery - `Ill_Posed_Example/`
-This example is a more challenging problem recovering material properties (ambient, diffuse, and specular coefficients) of a reflective sphere. Since pertubations of these parameters don't effect the entire render and have less impact on individual pixels, the loss function is a less accurate representation of the difference between pertubations.
+This example is a more challenging problem recovering material properties (ambient, diffuse, and specular coefficients) of a reflective sphere. Since perturbations of these parameters don't effect the entire render and have less impact on individual pixels, the loss function is a less accurate representation of the difference between perturbations.
 
 #### Ground Truth:
 <img width="500" height="500" alt="Ill Posed - Ground Truth" src="https://github.com/user-attachments/assets/8c11436b-09be-4222-a1ae-ce75f219d77d" />
