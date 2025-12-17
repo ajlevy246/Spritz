@@ -49,8 +49,7 @@ Then, we perturb the parameters of the light in the scene, and set these new par
 
 Finally, we apply ADAM:
 
-[![Well Posed Example - Progress Video]](./Ill_Posed_Example/progress.mp4)
-<video controls><source src="./Well_Posed_Example/progress.mp4" type="video/mp4"></video>
+https://github.com/ajlevy246/Spritz/raw/refs/heads/main/Well_Posed_Example/progress.mp4
 
 ### 1. Material Parameters with Simple Render - `Ill_Posed_Example/`
 This example is another proof-of-concept problem, where we construct a scene and set some initial parameters as our 'ground truth.'
@@ -68,7 +67,7 @@ Let's see what happens. First we set some initial conditions by pertubing the pa
 
 Finally, we apply ADAM. As expected, the final result has an ambient coefficient that is a bit higher than the ground truth material, but it actually recovered the specular highlight pretty well and overall performs better than expected with very little hyperparameter tuning.
 
-<video controls><source src="./Ill_Posed_Example/progress.mp4" type="video/mp4"></video>
+https://github.com/ajlevy246/Spritz/blob/main/Ill_Posed_Example/progress.mp4
 
 ### 3. Inverse Problem With Triangulzarized Mesh - `Inverse_Problem_Example`
 This example is an attempt at a much more complex problem, where we've moved on from rendered 'ground truth' images and instead attempt to recover some parameters from an image I screen grabbed off the web:
