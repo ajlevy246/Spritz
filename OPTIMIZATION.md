@@ -72,8 +72,7 @@ https://github.com/user-attachments/assets/bd31dcca-154a-4ca5-81ff-12d296ef44f5
 ### 3. Inverse Problem With Triangulzarized Mesh - `Inverse_Problem_Example`
 This example is an attempt at a much more complex problem, where we've moved on from rendered 'ground truth' images and instead attempt to recover some parameters from an image I screen grabbed off the web:
 
-<img width="125" height="124" alt="Inverse Problem - Screengrabbed Ground Truth" src="https://github.com/user-attachments/assets/821fbe4c-b3e7-48db-aac3-3ed3ce25cdda" />
-
+<img width="250" height="248" alt="snowden" src="https://github.com/user-attachments/assets/0b393bd8-9c42-4a03-aeed-eba7ff66a64d" />
 
 In this problem, we try to recover material and lighting parameters of the scene in which the screenshot was rendered. We start by loading the mesh into a scene:
 
