@@ -67,7 +67,7 @@ https://github.com/user-attachments/assets/af463a68-80ee-48ed-9838-66c4e520447d
 >> We see that the algorithm successfully recovers the original light parameters on this well-posed problem.
 
 ### 2. Material Parameters Recovery - `Ill_Posed_Example/`
-This example is a more challenging problem recovering material properties (ambient, diffuse, and specular coefficients) of a reflective sphere. Since perturbations of these parameters don't effect the entire render and have less impact on individual pixels, the loss function is a less accurate representation of the difference between perturbations.
+This example is a more challenging problem recovering material properties (ambient, diffuse, and specular coefficients) of a reflective sphere. Since perturbations of these parameters don't affect the entire render and have less impact on individual pixels, the loss function is a less accurate representation of the difference between perturbations.
 
 #### Ground Truth:
 <img width="500" height="500" alt="Ill Posed - Ground Truth" src="https://github.com/user-attachments/assets/8c11436b-09be-4222-a1ae-ce75f219d77d" />
@@ -125,6 +125,6 @@ The results show better convergence than I originally expected. Although the tar
 
 ## Running The Project
 
-### 1. Download the Project Files:
+Navigate to the folder containing the example to run. On Windows, double-click the `example.exe` application to run the program. It should open a terminal window that prints diagnostic information as the code runs, while progress images are saved to the directory (e.g. `ground_truth.png`).
 
-Work in progress...
+See the code by opening the `example.cpp` files in a code/text editor.
