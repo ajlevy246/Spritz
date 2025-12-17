@@ -1,71 +1,120 @@
+# ==============================
 # Compiler and flags
+# ==============================
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -O3 -march=native -Iinclude 
+CXXFLAGS := -std=c++17 -O3 -march=native -Iinclude
 LDFLAGS := -pthread
 
 # Profiling flags
-PROFILE_CXXFLAGS := -std=c++17 -Wall -Wextra -O2 -g -Iinclude
+PROFILE_CXXFLAGS := -std=c++17 -O2 -g -pg -Iinclude
 PROFILE_LDFLAGS := -pthread -pg
 
+# ==============================
 # Directories
+# ==============================
 SRC_DIR := src
 BUILD_DIR := build
 PROFILE_BUILD_DIR := build_profile
 INCLUDE_DIR := include
 
-# Output executable
+# ==============================
+# Targets
+# ==============================
 TARGET := spritz
 PROFILE_TARGET := spritz_profile
+LIB := $(BUILD_DIR)/libspritz.a
+PROFILE_LIB := $(PROFILE_BUILD_DIR)/libspritz.a
 
-# Find all .cpp files recursively in src and the root directory
-SRC_FILES := $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp) main.cpp
+# ==============================
+# Source discovery
+# ==============================
+SRC_FILES := $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
+MAIN_SRC := main.cpp
 
-# Generate corresponding .o paths under build/
-OBJ_FILES := $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SRC_FILES))
-PROFILE_OBJ_FILES := $(patsubst %.cpp, $(PROFILE_BUILD_DIR)/%.o, $(SRC_FILES))
+SRC_OBJS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
+PROFILE_SRC_OBJS := $(patsubst %.cpp,$(PROFILE_BUILD_DIR)/%.o,$(SRC_FILES))
 
-# Default rule
+MAIN_OBJ := $(BUILD_DIR)/main.o
+PROFILE_MAIN_OBJ := $(PROFILE_BUILD_DIR)/main.o
+
+# ==============================
+# Examples
+# ==============================
+EXAMPLE_DIRS := $(wildcard *Example)
+EXAMPLE_SRCS := $(addsuffix /example.cpp,$(EXAMPLE_DIRS))
+EXAMPLE_BINS := $(addsuffix /example,$(EXAMPLE_DIRS))
+
+# ==============================
+# Default target
+# ==============================
 all: $(TARGET)
 
-# Link all objects
-$(TARGET): $(OBJ_FILES)
-	@echo "Linking..."
-	$(CXX) $(OBJ_FILES) -o $@ $(LDFLAGS)
+# ==============================
+# Static library
+# ==============================
+$(LIB): $(SRC_OBJS)
+	@echo "Archiving $@..."
+	ar rcs $@ $^
 
-# Compile each .cpp file into build/.../.o
+$(PROFILE_LIB): $(PROFILE_SRC_OBJS)
+	@echo "Archiving profile library $@..."
+	ar rcs $@ $^
+
+# ==============================
+# Main executable
+# ==============================
+$(TARGET): $(LIB) $(MAIN_OBJ)
+	@echo "Linking $(TARGET)..."
+	$(CXX) $(MAIN_OBJ) $(LIB) -o $@ $(LDFLAGS)
+
+$(PROFILE_TARGET): $(PROFILE_LIB) $(PROFILE_MAIN_OBJ)
+	@echo "Linking $(PROFILE_TARGET)..."
+	$(CXX) $(PROFILE_MAIN_OBJ) $(PROFILE_LIB) -o $@ $(PROFILE_LDFLAGS)
+
+# ==============================
+# Object compilation rules
+# ==============================
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	@echo "Compiling $<..."
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Profile build target
-profile: $(PROFILE_TARGET)
-
-$(PROFILE_TARGET): $(PROFILE_OBJ_FILES)
-	@echo "Linking profile build..."
-	$(CXX) $(PROFILE_OBJ_FILES) -o $@ $(PROFILE_LDFLAGS)
-
 $(PROFILE_BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	@echo "Compiling $< (profile)..."
-	$(CXX) $(PROFILE_CXXFLAGS) -pg -c $< -o $@
+	$(CXX) $(PROFILE_CXXFLAGS) -c $< -o $@
 
-# Run and analyze profile
+# ==============================
+# Examples
+# ==============================
+examples: $(EXAMPLE_BINS)
+
+%Example/example: %Example/example.cpp $(LIB)
+	@echo "Linking example in $(@D)..."
+	$(CXX) $(CXXFLAGS) $< $(LIB) -o $@ $(LDFLAGS)
+
+# ==============================
+# Profiling
+# ==============================
+profile: $(PROFILE_TARGET)
+
 run-profile: $(PROFILE_TARGET)
 	@echo "Running profiler..."
 	./$(PROFILE_TARGET)
-	@echo "\nGenerating profile report..."
+	@echo "Generating profile report..."
 	gprof $(PROFILE_TARGET) gmon.out > profile_report.txt
 	@echo "Profile report saved to profile_report.txt"
-	@echo "\nTop 10 time consumers:"
 	@gprof $(PROFILE_TARGET) gmon.out | head -n 30
 
-# Clean build artifacts
-clean:
-	rm -rf $(BUILD_DIR) $(PROFILE_BUILD_DIR) $(TARGET) $(PROFILE_TARGET) gmon.out profile_report.txt
-
-# Run program
+# ==============================
+# Utilities
+# ==============================
 run: $(TARGET)
 	./$(TARGET)
 
-.PHONY: all clean run profile run-profile
+clean:
+	rm -rf $(BUILD_DIR) $(PROFILE_BUILD_DIR) \
+	       $(TARGET) $(PROFILE_TARGET) \
+	       $(EXAMPLE_BINS) gmon.out profile_report.txt
+
+.PHONY: all clean run profile run-profile examples
