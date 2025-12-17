@@ -5,7 +5,6 @@ build/
 spritz
 
 animation/
-*.png
 backgrounds/
 
 logs/
