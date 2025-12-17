@@ -33,6 +33,10 @@ sun.position.x += pertubation;
 
 3. **Algorithm**: I used the ADAM optimization algorithm for these examples, and it worked extremely quickly. 
 
+<img width="770" height="253" alt="visualization" src="https://github.com/user-attachments/assets/1f7268e0-9f2d-421d-915d-fddd415950b2" />
+
+>> A visualization of the photometric loss between two renders.
+
 ## Examples 
 
 I've set up some simple examples in the following folders to get a sense of what these problems look like and how difficult they are. To build these examples, run `make examples` from the root directory. Then navigate to an example's folder, and run the compiled `./example` binary.
