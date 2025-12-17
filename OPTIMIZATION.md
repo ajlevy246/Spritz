@@ -110,6 +110,18 @@ This example is an attempt at a much more complex problem, where we attempt to r
 
  <img width="250" height="248" alt="final_snowden" src="https://github.com/user-attachments/assets/7de8efdd-b9f0-4657-a81b-2fd177af7e7e" />
 
+The results show better convergence than I originally expected. Although the target screenshot and synthetic recongstruction don't align well, the algorithm still recovers some specular highlights, specifically around the face after only a few hundred iterations. With a lighting model that's more true to the target image, I think we would see vastly improved results.
+
+## Results and Future Work
+
+### Limitations:
+* Finite differences are computationally expensive, and even simple problems take hours with just a few thousand triangles.
+* Creating initial reconstructions is a fundamental limitation. The loss function is only a good representation of the problem when the target image and its rendered reconstruction line up well.
+
+### Future Improvements:
+* Support for automatic differentation for better gradient estimates, and stochastic methods for faster iterates.
+* Support for complex lighting models, like path tracing.
+* Implement different loss functions that represent the problems better. For example, use multiple target images to better reconstruct lighting parameters.
 
 ## Running The Project
 
