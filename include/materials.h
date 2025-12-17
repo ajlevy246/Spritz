@@ -22,3 +22,4 @@ extern Material amber_glass;
 extern Material green_glass;
 extern Material glass;
 extern Material red_plastic;
+extern Material green_plastic;

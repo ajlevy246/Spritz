@@ -1,5 +1,3 @@
-
-
 # Spritz++
 Spritz++ is a port of my Python toy raytracer to C++. It's capable of simulating refractive materials using the Fresnel Equations, projecting background HDRi's, and complex lighting in scenes. The goal of this project is to learn more about C++ and parallelization in graphics, and eventually to turn this into a fully differentiable raytracing engine.[^1][^2][^3]
 

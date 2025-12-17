@@ -36,7 +36,7 @@ void parse_face_vertex(
 TriangularMesh::TriangularMesh(const std::string& filename, Material* mat) {
     material = mat;
 
-    std::cout << "Loading from file: " << filename << "\n";
+    // std::cout << "Loading from file: " << filename << "\n";
     std::ifstream file(filename);
     if (!file)
         throw std::runtime_error("Cannot open OBJ file");
@@ -98,14 +98,14 @@ TriangularMesh::TriangularMesh(const std::string& filename, Material* mat) {
             }
         }
         else {
-            std::cout << "Unrecognized tag: " << tag << std::endl;
+            // std::cout << "Unrecognized tag: " << tag << std::endl;
         }
     }
-    std::cout << "Setting bb..." << std::endl;
+    // std::cout << "Setting bb..." << std::endl;
     bounding_box.minv = minv;
     bounding_box.maxv = maxv;
     vertices = std::move(temp_vertices);
-    std::cout << "Loaded material successfully" << std::endl;
+    // std::cout << "Loaded material successfully" << std::endl;
 }
 
 
