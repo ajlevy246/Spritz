@@ -41,11 +41,11 @@ I've set up some simple examples in the following folders to get a sense of what
 ### 1. Light Parameters with Simple Render - `Well_Posed_Example/`
 This example is a proof-of-concept problem the uses a simple render as ground truth:
 
-![Well Posed Example - Ground Truth](./Well_Posed_Example/ground_truth.png)
+<img width="500" height="500" alt="ground_truth" src="https://github.com/user-attachments/assets/17e8b875-48bd-40a6-b70c-bef10726cae0" />
 
 Then, we perturb the parameters of the light in the scene, and set these new parameters as the 'initial conditions': 
 
-![Well Posed Example - Initial Conditions](./Well_Posed_Example/initial_guess.png)
+<img width="500" height="500" alt="initial_guess" src="https://github.com/user-attachments/assets/a2d0def5-251e-4a31-8aac-d8263e10f533" />
 
 Finally, we apply ADAM:
 
@@ -54,7 +54,7 @@ https://github.com/user-attachments/assets/af463a68-80ee-48ed-9838-66c4e520447d
 ### 1. Material Parameters with Simple Render - `Ill_Posed_Example/`
 This example is another proof-of-concept problem, where we construct a scene and set some initial parameters as our 'ground truth.'
 
-![Ill Posed Example - Ground Truth](./Ill_Posed_Example/ground_truth.png)
+<img width="500" height="500" alt="Ill Posed - Ground Truth" src="https://github.com/user-attachments/assets/8c11436b-09be-4222-a1ae-ce75f219d77d" />
 
 In this case, the problem is to recover the material properties of the reflective sphere in the center of the image (specifically, the ambient, diffuse, and specular coefficients). I've labeled this problem as 'Ill-posed' for a couple reasons:
 
@@ -63,7 +63,7 @@ In this case, the problem is to recover the material properties of the reflectiv
 
 Let's see what happens. First we set some initial conditions by pertubing the parameters (look carefully at the reflective sphere):
 
-![Ill Posed Example - Initial Conditions](./Ill_Posed_Example/initial_guess.png)
+<img width="500" height="500" alt="Ill Posed - Initial Conditions" src="https://github.com/user-attachments/assets/877a8ee6-7919-4916-b4b2-ac3181bdeba9" />
 
 Finally, we apply ADAM. As expected, the final result has an ambient coefficient that is a bit higher than the ground truth material, but it actually recovered the specular highlight pretty well and overall performs better than expected with very little hyperparameter tuning.
 
@@ -72,8 +72,10 @@ https://github.com/user-attachments/assets/bd31dcca-154a-4ca5-81ff-12d296ef44f5
 ### 3. Inverse Problem With Triangulzarized Mesh - `Inverse_Problem_Example`
 This example is an attempt at a much more complex problem, where we've moved on from rendered 'ground truth' images and instead attempt to recover some parameters from an image I screen grabbed off the web:
 
-![Inverse Problem - Ground Truth](./Inverse_Problem_Example/snowden_gt.png)
+<img width="125" height="124" alt="Inverse Problem - Screengrabbed Ground Truth" src="https://github.com/user-attachments/assets/821fbe4c-b3e7-48db-aac3-3ed3ce25cdda" />
+
 
 In this problem, we try to recover material and lighting parameters of the scene in which the screenshot was rendered. We start by loading the mesh into a scene:
 
-![Inverse Problem - Initial Conditions](./Inverse_Problem_Example/initial_guess.png)
+<img width="250" height="250" alt="Inverse Problem - Initial Guess" src="https://github.com/user-attachments/assets/01814112-4eee-49e2-be5c-0d875a1da7a6" />
+
